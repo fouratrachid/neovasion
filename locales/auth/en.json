@@ -1,0 +1,64 @@
+{
+  "auth": {
+    "signIn": {
+      "title": "Welcome back",
+      "subtitle": "Enter your email to sign in",
+      "emailRequired": "Email is required",
+      "passwordPlaceholder": "Password",
+      "emailPlaceholder": "Email address",
+      "passwordRequired": "Password is required",
+      "invalidEmail": "Please enter a valid email address",
+      "submit": "Continue",
+      "login": "Login",
+      "loginFailed": "Login failed",
+      "loginFailedTitle": "Login Failed",
+      "noAccount": "Don't have an account?",
+      "signUpLink": "Sign Up"
+    },
+    "role": {
+      "attendee": "Attendee",
+      "eventManager": "Event Manager"
+    },
+    "signUp": {
+      "title": "Create Account",
+      "nameRequired": "Name is required",
+      "firstNamePlaceholder": "First Name",
+      "lastNamePlaceholder": "Last Name",
+      "emailRequired": "Email required",
+      "emailPlaceholder": "Email",
+      "submit": "Sign Up",
+      "failedTitle": "Sign Up Failed",
+      "errorCreating": "Error creating account",
+      "hasAccount": "Already have an account?",
+      "signIn": "Sign in"
+    },
+    "otp": {
+      "title": "Check your email",
+      "subtitle": "We sent an 8-character code to",
+      "placeholder": "ABC12345",
+      "verifyButton": "Verify Code",
+      "invalidTitle": "Invalid Code",
+      "invalidMessage": "Please enter an 8-character code.",
+      "errorTitle": "Error",
+      "verificationFailed": "Verification failed",
+      "didntReceive": "Didn't receive code?",
+      "resend": "Resend"
+    },
+    "atsLogin": {
+      "title": "Events",
+      "authenticating": "Authenticating...",
+      "pleaseWait": "Please wait while we verify your credentials",
+      "success": "Authentication Successful",
+      "redirecting": "Redirecting to your dashboard...",
+      "failed": "Authentication Failed",
+      "loginFailed": "Authentication failed",
+      "tokenMissing": "Authentication token is missing",
+      "tokenExpired": "Token has expired (older than 5 minutes)",
+      "userNotActive": "User is not active",
+      "userNotFound": "User not found",
+      "invalidToken": "Invalid token",
+      "retry": "Try Again",
+      "goToSignIn": "Go to Sign In"
+    }
+  }
+}

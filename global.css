@@ -1,0 +1,26 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer utilities {
+  .font-bold {
+    font-family: 'AppBold';
+    font-weight: normal;
+  }
+  .font-semibold {
+    font-family: 'AppSemiBold';
+    font-weight: normal;
+  }
+  .font-medium {
+    font-family: 'AppMedium';
+    font-weight: normal;
+  }
+  .font-sans {
+    font-family: 'AppRegular';
+    font-weight: normal;
+  }
+  .font-normal {
+    font-family: 'AppRegular';
+    font-weight: normal;
+  }
+}

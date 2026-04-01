@@ -1,0 +1,142 @@
+{
+  "auth": {
+        "sessionExpired": {
+      "title": "Session expirée",
+      "message": "Votre session a expiré. Veuillez vous reconnecter.",
+      "button": "OK"
+    },
+    "signIn": {
+      "title": "Se connecter",
+      "tagline": "Votre compagnon de carrière",
+      "welcomeMessage": "Bon retour ! Veuillez saisir vos identifiants.",
+      "email": "Email",
+      "emailPlaceholder": "Entrez votre email",
+         "emailRequired": "L'email est requis",
+      "emailInvalid": "Veuillez saisir une adresse email valide",
+      
+      "submit": "Soumettre",
+      "passwordRequired": "Le mot de passe est requis",
+      "passwordTooShort": "Le mot de passe doit contenir au moins 8 caractères",
+      "passwordNoLowercase": "Le mot de passe doit contenir au moins une lettre minuscule",
+      "passwordNoUppercase": "Le mot de passe doit contenir au moins une lettre majuscule",
+      "passwordNoNumber": "Le mot de passe doit contenir au moins un chiffre",
+      
+      "password": "Mot de passe",
+      "passwordPlaceholder": "••••••••",
+      "forgotPassword": "Mot de passe oublié ?",
+      "signInButton": "Se connecter",
+      "signingIn": "Connexion en cours...",
+      "orConnectWith": "Ou connectez-vous avec",
+      "signInWithGoogle": "Se connecter avec Google",
+      "noAccount": "Vous n'avez pas de compte ?",
+      "signUp": "S'inscrire",
+      "linkedInLogin": "Se connecter avec LinkedIn",
+      "googleLogin": "Se connecter avec Google",
+      "or" : "OU",
+       "error": {
+        "title": "Échec de l'authentification",
+        "general": "Veuillez vérifier vos identifiants et réessayer.",
+        "networkError": "Erreur réseau. Veuillez vérifier votre connexion internet.",
+        "invalidCredentials": "Email ou mot de passe invalide."
+      }
+    },
+    "signUp": {
+      "submit": "Soumettre",
+      "linkedInSignUp": "S'inscrire avec LinkedIn",
+      "googleSignUp": "S'inscrire avec Google",
+      "orSignUpWith": "Ou",
+      "title": "Créez votre compte",
+      "welcomeMessage": "Rejoignez-nous et commencez votre aventure !",
+      "firstName": "Prénom",
+      "firstNamePlaceholder": "Entrez votre prénom",
+      "lastName": "Nom",
+      "lastNamePlaceholder": "Entrez votre nom",
+      "email": "Email",
+      "emailPlaceholder": "Entrez votre email",
+      "phoneNumber": "Numéro de téléphone",
+      "phonePlaceholder": "Entrez votre numéro",
+      "password": "Mot de passe",
+      "passwordPlaceholder": "••••••••",
+      "confirmPassword": "Confirmez le mot de passe",
+      "confirmPasswordPlaceholder": "Confirmez votre mot de passe",
+      "creatingAccount": "Création du compte...",
+      "signUpButton": "Créer un compte",
+      "orConnectWith": "Ou inscrivez-vous avec",
+      "signUpWithLinkedIn": "S'inscrire avec LinkedIn",
+      "signUpWithGoogle": "S'inscrire avec Google",
+      "hasAccount": "Vous avez déjà un compte ?",
+      "signIn": "Se connecter",
+      "emailVerification": {
+        "title": "Vérifiez votre email",
+        "message": "Nous vous avons envoyé un email de vérification. Veuillez vérifier votre boîte de réception."
+      },
+      "success": {
+        "title": "Bienvenue !",
+        "message": "Votre compte a été créé avec succès !"
+      } ,  "error": {
+        "title": "Échec de l'inscription",
+        "general": "Veuillez vérifier vos informations et réessayer.",
+        "networkError": "Erreur réseau. Veuillez vérifier votre connexion internet.",
+        "emailInUse": "Cet email est déjà utilisé.",
+        "weakPassword": "Le mot de passe est trop faible."
+    },
+     "firstNameRequired": "Le prénom est requis",
+      "firstNameInvalid": "Le prénom ne doit contenir que des lettres",
+      "firstNameTooShort": "Le prénom doit contenir au moins 2 caractères",
+      
+      "lastNameRequired": "Le nom est requis",
+      "lastNameInvalid": "Le nom ne doit contenir que des lettres",
+      "lastNameTooShort": "Le nom doit contenir au moins 2 caractères",
+      
+      "emailRequired": "L'email est requis",
+      "emailInvalid": "Veuillez saisir une adresse email valide",
+      
+      "phoneRequired": "Le numéro de téléphone est requis",
+      "phoneInvalid": "Veuillez saisir un numéro de téléphone valide",
+      "phoneTooShort": "Le numéro de téléphone doit contenir au moins 10 chiffres",
+      
+      "passwordRequired": "Le mot de passe est requis",
+      "passwordTooShort": "Le mot de passe doit contenir au moins 8 caractères",
+      "passwordNoLowercase": "Le mot de passe doit contenir au moins une lettre minuscule",
+      "passwordNoUppercase": "Le mot de passe doit contenir au moins une lettre majuscule",
+      "passwordNoNumber": "Le mot de passe doit contenir au moins un chiffre",
+      
+      "confirmPasswordRequired": "Veuillez confirmer votre mot de passe",
+      "passwordsDoNotMatch": "Les mots de passe ne correspondent pas"
+    }
+
+    ,
+    "forgotPassword": {
+  "title": "Mot de passe oublié ?",
+  "subtitle": "Saisissez votre adresse e-mail et nous vous enverrons les instructions pour réinitialiser votre mot de passe.",
+  "sendButton": "Envoyer le lien de réinitialisation",
+  "sending": "Envoi...",
+  "successTitle": "E-mail envoyé !",
+  "successMessage": "Les instructions de réinitialisation du mot de passe ont été envoyées à votre adresse e-mail.",
+  "errorTitle": "Erreur",
+  "errorMessage": "Échec de l’envoi de l’e-mail de réinitialisation. Veuillez réessayer.",
+  "infoTitle": "Remarque",
+  "infoMessage": "Si un compte existe avec cet e-mail, vous recevrez les instructions de réinitialisation du mot de passe. Vérifiez votre dossier de spam si vous ne voyez pas l’e-mail.",
+  "rememberPassword": "Vous souvenez-vous de votre mot de passe ?"
+},
+    "atsLogin": {
+      "title": "Événements",
+      "authenticating": "Authentification en cours...",
+      "pleaseWait": "Veuillez patienter pendant que nous vérifions vos identifiants",
+      "success": "Authentification réussie",
+      "redirecting": "Redirection vers votre tableau de bord...",
+      "failed": "Échec de l'authentification",
+      "loginFailed": "Échec de l'authentification",
+      "tokenMissing": "Le jeton d'authentification est manquant",
+      "tokenExpired": "Le jeton a expiré (plus de 5 minutes)",
+      "userNotActive": "L'utilisateur n'est pas actif",
+      "userNotFound": "Utilisateur non trouvé",
+      "invalidToken": "Jeton invalide",
+      "retry": "Réessayer",
+      "goToSignIn": "Aller à la connexion"
+    }
+  },
+  "common": {
+    "ok": "OK"
+  }
+}

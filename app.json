@@ -1,0 +1,109 @@
+{
+  "expo": {
+    "name": "neovasion",
+    "slug": "neovasion",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/images/icon-logo.png",
+    "scheme": "neovasion",
+    "userInterfaceStyle": "automatic",
+    "newArchEnabled": true,
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.fouratrachid.neovasion",
+      "infoPlist": {
+        "NSMicrophoneUsageDescription": "This app needs access to your microphone for video interviews.",
+        "NSCameraUsageDescription": "This app needs access to your camera for video interviews.",
+        "ITSAppUsesNonExemptEncryption": false,
+        "ExpoLocalization_supportsRTL": true
+      },
+      "bitcode": false
+    },
+    "android": {
+      "permissions": [
+        "RECORD_AUDIO",
+        "CAMERA",
+        "MODIFY_AUDIO_SETTINGS",
+        "android.permission.RECORD_AUDIO",
+        "android.permission.MODIFY_AUDIO_SETTINGS",
+        "android.permission.INTERNET",
+        "android.permission.ACCESS_NETWORK_STATE",
+        "android.permission.CAMERA",
+        "android.permission.SYSTEM_ALERT_WINDOW",
+        "android.permission.WAKE_LOCK",
+        "android.permission.BLUETOOTH",
+        "RECORD_AUDIO",
+        "CAMERA",
+        "MODIFY_AUDIO_SETTINGS",
+        "android.permission.RECORD_AUDIO",
+        "android.permission.MODIFY_AUDIO_SETTINGS",
+        "android.permission.INTERNET",
+        "android.permission.ACCESS_NETWORK_STATE",
+        "android.permission.CAMERA",
+        "android.permission.SYSTEM_ALERT_WINDOW",
+        "android.permission.WAKE_LOCK",
+        "android.permission.BLUETOOTH"
+      ],
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/images/logo.png",
+        "backgroundColor": "#ffffff"
+      },
+      "edgeToEdgeEnabled": true,
+      "package": "com.fouratrachid.neovasion",
+      "softwareKeyboardLayoutMode": "pan",
+      "usesCleartextTraffic": true
+    },
+    "web": {
+      "bundler": "metro",
+      "output": "static",
+      "favicon": "./assets/images/logo.png"
+    },
+    "plugins": [
+      [
+        "expo-audio",
+        {
+          "microphonePermission": "Allow $(PRODUCT_NAME) to access your microphone."
+        }
+      ],
+      [
+        "expo-router",
+        {
+          "sitemap": false
+        }
+      ],
+      [
+        "@novastera-oss/rn-google-signin",
+        {
+          "iosUrlScheme": "com.googleusercontent.apps.691241804476-jlcndk00pv6gmudmfsiu1eso4dokj3go.apps.googleusercontent.com"
+        }
+      ],
+      [
+        "expo-splash-screen",
+        {
+          "image": "./assets/images/logo.png",
+          "imageWidth": 200,
+          "resizeMode": "contain",
+          "backgroundColor": "#ffffff"
+        }
+      ],
+      "expo-localization",
+      "expo-secure-store",
+      "expo-audio",
+      "expo-asset"
+
+    ],
+    "experiments": {
+      "typedRoutes": true
+    },
+    "extra": {
+      "supportsRTL": true,
+      "router": {
+        "sitemap": false
+      }
+    },
+    "runtimeVersion": {
+      "policy": "appVersion"
+    }
+  
+  }
+}

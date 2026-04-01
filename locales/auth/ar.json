@@ -1,0 +1,62 @@
+{
+  "auth": {
+    "signIn": {
+      "title": "مرحباً بعودتك",
+      "subtitle": "أدخل بريدك الإلكتروني لتسجيل الدخول",
+      "emailRequired": "البريد الإلكتروني مطلوب",
+      "emailPlaceholder": "عنوان البريد الإلكتروني",
+      "passwordPlaceholder": "كلمة المرور",
+      "passwordRequired": "كلمة المرور مطلوبة",
+      "invalidEmail": "الرجاء إدخال بريد إلكتروني صالح",
+      "submit": "متابعة",
+      "login": "تسجيل الدخول",
+      "loginFailed": "فشل تسجيل الدخول",
+      "loginFailedTitle": "فشل تسجيل الدخول",
+      "noAccount": "ليس لديك حساب؟",
+      "signUpLink": "إنشاء حساب"
+    },
+    "role": {
+      "attendee": "حاضر",
+      "eventManager": "منظم الفعاليات"
+    },
+    "signUp": {
+      "title": "إنشاء حساب",
+      "nameRequired": "الاسم مطلوب",
+      "firstNamePlaceholder": "الاسم الأول",
+      "lastNamePlaceholder": "اسم العائلة",
+      "emailRequired": "البريد الإلكتروني مطلوب",
+      "emailPlaceholder": "البريد الإلكتروني",
+      "submit": "إنشاء حساب",
+      "failedTitle": "فشل إنشاء الحساب",
+      "errorCreating": "خطأ في إنشاء الحساب",
+      "hasAccount": "هل لديك حساب بالفعل؟",
+      "signIn": "تسجيل الدخول"
+    },
+    "otp": {
+      "title": "تحقق من بريدك الإلكتروني",
+      "subtitle": "أرسلنا رمزاً مكوناً من 8 أحرف إلى",
+      "placeholder": "ABC12345",
+      "verifyButton": "تحقق من الرمز",
+      "invalidTitle": "رمز غير صالح",
+      "invalidMessage": "الرجاء إدخال رمز مكون من 8 أحرف.",
+      "errorTitle": "خطأ",
+      "verificationFailed": "فشل التحقق",
+      "didntReceive": "لم تستلم الرمز؟",
+      "resend": "إعادة إرسال"    },
+    "atsLogin": {
+      "title": "الفعاليات",
+      "authenticating": "جارٍ المصادقة...",
+      "pleaseWait": "يرجى الانتظار بينما نتحقق من بيانات الاعتماد الخاصة بك",
+      "success": "نجحت المصادقة",
+      "redirecting": "إعادة التوجيه إلى لوحة التحكم الخاصة بك...",
+      "failed": "فشلت المصادقة",
+      "loginFailed": "فشلت المصادقة",
+      "tokenMissing": "رمز المصادقة مفقود",
+      "tokenExpired": "انتهت صلاحية الرمز (أكثر من 5 دقائق)",
+      "userNotActive": "المستخدم غير نشط",
+      "userNotFound": "المستخدم غير موجود",
+      "invalidToken": "رمز غير صالح",
+      "retry": "حاول مرة أخرى",
+      "goToSignIn": "الذهاب إلى تسجيل الدخول"    }
+  }
+}

@@ -1,0 +1,74 @@
+# Learn more https://docs.github.com/en/get-started/getting-started-with-git/ignoring-files
+
+# dependencies
+node_modules/
+screenshots/
+docs/
+# Expo
+.gemini/
+.expo/
+dist/
+web-build/
+expo-env.d.ts
+.github/
+# Native
+.kotlin/
+*.orig.*
+*.jks
+*.p8
+*.p12
+*.key
+*.mobileprovision
+*.iml
+*.hprof
+*.lock
+*.log
+*.keystore
+*.jks
+*.apk
+*.aar
+*.aab
+*.so
+*.swp
+.gradle/
+.idea/
+.vscode/
+# Metro
+.metro-health-check*
+
+# debug
+npm-debug.*
+yarn-debug.*
+yarn-error.*
+
+# macOS
+.DS_Store
+*.pem
+
+# local env files
+.env*.local
+.env
+.env.*
+# typescript
+*.tsbuildinfo
+
+# Build output
+dist/
+web-build/
+build/
+ios/
+android/
+# google-services.json
+# GoogleService-Info.plist
+google-services.json
+GoogleService-Info.plist
+
+# Expo
+.expo
+dist/
+web-build/
+chat_doc.md
+MOBILE_HOSTED_EVENTS_SPEC.md
+MOBILE_NOTIFICATIONS_SPEC.md
+RTL_LANGUAGE_SWITCHING_GUIDE.md
+TRANSCRIPT_SOCKET_IMPLEMENTATION.md
