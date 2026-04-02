@@ -27,22 +27,23 @@ class AccommodationsService {
 
     async fetchAccommodationDetails(id: string) {
         try {
-            console.log(`🏨 AccommodationsService: Looking up accommodation details for ${id}...`);
+            console.log(`🏨 AccommodationsService: Fetching accommodation details for ${id}...`);
+            const response = await apiService.request<{ success?: boolean; data?: any; _id?: string }>(
+                `hebergement-trips/${id}`,
+                {
+                    method: "GET",
+                },
+            );
+            console.log("✅ AccommodationsService: Accommodation details fetched successfully");
             
-            // The single GET endpoints return 404, so we pull the main list and find the item
-            const allItemsResponse = await this.fetchAccommodations();
-            
-            const accommodation = allItemsResponse.accomodations?.find(item => item._id === id);
-
-            if (!accommodation) {
-                throw new Error("Accommodation out of bounds or not found");
+            // Allow dynamic wrapper unpacking
+            if (response.data) {
+                 return { success: true, data: response.data };
             }
-            
-            console.log("✅ AccommodationsService: Accommodation details resolved successfully");
-            return { success: true, data: accommodation };
+            return { success: true, data: response }; // If no root wrapper
         } catch (error) {
-            console.error(`❌ AccommodationsService: Failed to resolve accommodation details for ${id}:`, error);
-            throw error;
+             console.error(`❌ AccommodationsService: Failed to fetch accommodation details for ${id}:`, error);
+             throw error;
         }
     }
 }
