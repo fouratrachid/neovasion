@@ -32,18 +32,26 @@ export type Accommodation = {
     _id: string;
     type: string;
     name: string;
+    description?: string;
     position: string;
     files: AccommodationFile[];
     services: AccommodationService[];
     options: AccommodationOption[];
     is_active: boolean;
-    location: AccommodationLocation;
+    location?: AccommodationLocation;
+    createdAt?: string;
+    updatedAt?: string;
 };
 
 export type AccommodationsResponse = {
     country: string;
     bounds: AccommodationsBounds;
     accomodations: Accommodation[]; // Using backend spelling
+};
+
+export type AccommodationDetailsResponse = {
+    success: boolean;
+    data: Accommodation;
 };
 
 export type AccommodationFilterType = 'all' | 'Appartement' | 'Maison d\'hôtes' | 'Eco Lodge' | 'Hôtel';
