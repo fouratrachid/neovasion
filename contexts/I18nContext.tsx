@@ -1,5 +1,4 @@
 import type { I18nContextValue, I18nProviderProps } from "@/interfaces/context";
-import { useAuthStore } from "@/stores/authStore";
 import type { Locale } from "@/types";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as Updates from "expo-updates";
@@ -23,7 +22,6 @@ export const I18nProvider: React.FC<I18nProviderProps> = ({ children }) => {
     i18n.language as Locale,
   );
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const { syncNotificationLanguage, isAuthenticated } = useAuthStore();
 
   useEffect(() => {
     const currentIsRTL = RTL_LANGUAGES.includes(i18n.language as Locale);
@@ -48,12 +46,6 @@ export const I18nProvider: React.FC<I18nProviderProps> = ({ children }) => {
     }
 
     // Just sync notification language
-    const syncLanguage = async () => {
-      if (isAuthenticated) {
-        await syncNotificationLanguage(i18n.language as Locale);
-      }
-    };
-    syncLanguage();
   }, []);
 
   const changeLanguage = async (languageCode: Locale): Promise<void> => {
@@ -79,10 +71,6 @@ export const I18nProvider: React.FC<I18nProviderProps> = ({ children }) => {
       await i18n.changeLanguage(languageCode);
       setCurrentLanguage(languageCode);
       setIsRTL(isNewLanguageRTL);
-
-      if (isAuthenticated) {
-        await syncNotificationLanguage(languageCode);
-      }
     } catch (error) {
       console.log("Error changing language:", error);
     } finally {

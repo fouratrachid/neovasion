@@ -41,10 +41,16 @@ class ApiService {
   }
 
   public async request<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
+    // Initialize headers properly
+    const headers: any = {
+      'Content-Type': 'application/json',
+      ...options.headers,
+    };
+
     const config: AxiosRequestConfig = {
       url: endpoint,
       method: options.method || 'GET',
-      headers: options.headers as any,
+      headers,
     };
 
     // Handle FormData

@@ -101,3 +101,55 @@ export type TripsActivityResponse = {
 };
 
 export type TripTypeFilter = 'all' | 'city' | 'beach' | 'adventure' | 'nature';
+
+// Detail Types
+
+export type Review = {
+    _id?: string;
+    iduser?: string;
+    avis: number;
+    comment: string;
+};
+
+export type DetailedHoster = {
+    _id: string;
+    firstname: string;
+    lastname: string;
+    email?: string;
+    about?: string;
+    grad?: number;
+    imageProfile?: string;
+    uniqueName?: string;
+    rating?: Review[];
+};
+
+export type DetailedCategory = {
+    _id: string;
+    name: string;
+    description?: string;
+    disponible?: boolean;
+    icon?: string;
+};
+
+export type DestinationHebergement = {
+    type: string;
+    id_hebergement: string;
+    name: string;
+    type_hebergement: string;
+    hebergement_data?: TripAccommodation & { description?: string };
+};
+
+export type DetailedDestination = Omit<TripDestination, "hebergement"> & {
+    hebergement?: DestinationHebergement[];
+};
+
+export type DetailedTrip = Omit<Trip, "hoster" | "destination" | "categories"> & {
+    hoster?: DetailedHoster;
+    categorie?: DetailedCategory[];
+    destination?: DetailedDestination[];
+};
+
+export type TripDetailsResponse = {
+    success: boolean;
+    data: DetailedTrip;
+};
