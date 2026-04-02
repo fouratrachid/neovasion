@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { Platform, Pressable, Text, TextInput, View } from "react-native";
+import { Platform, Pressable, Text, TextInput, View, Modal, FlatList } from "react-native";
 import DateTimePicker from "@react-native-community/datetimepicker";
 
 import { HomeStats } from "./types";
@@ -9,9 +9,21 @@ type HomeHeroProps = {
   stats: HomeStats;
 };
 
+const COUNTRIES = [
+  "Tunisia",
+  "Morocco",
+  "Algeria",
+  "France",
+  "Spain",
+  "Italy",
+  "Turkey",
+];
+
 export default function HomeHero({ stats }: HomeHeroProps) {
   const [date, setDate] = useState<Date | null>(null);
   const [showPicker, setShowPicker] = useState(false);
+  const [country, setCountry] = useState<string>("Tunisia");
+  const [showCountryModal, setShowCountryModal] = useState(false);
 
   const onChangeDate = (event: any, selectedDate?: Date) => {
     setShowPicker(false); // Close on selection
@@ -37,23 +49,25 @@ export default function HomeHero({ stats }: HomeHeroProps) {
 
         <View className="mt-6 rounded-2xl bg-white px-3 py-3">
           <View className="flex-row items-center">
-            <View className="flex-1 flex-row items-center pr-3">
+            
+            <Pressable 
+              className="flex-1 flex-row items-center pr-3"
+              onPress={() => setShowCountryModal(true)}
+            >
               <MaterialCommunityIcons
                 name="map-marker-outline"
                 size={18}
                 color="#111827"
               />
-              <TextInput
-                placeholder="Tunisia"
-                placeholderTextColor="#111827"
-                className="ml-2 flex-1 py-1 text-[14px] font-poppins-semibold text-slate-900"
-              />
-            </View>
+              <Text className="ml-2 flex-1 py-1 text-[14px] font-poppins-semibold text-slate-900" numberOfLines={1}>
+                {country}
+              </Text>
+            </Pressable>
 
             <View className="h-7 w-px bg-slate-200" />
 
             <Pressable 
-              className="flex-1 flex-row items-center px-3"
+              className="flex-1 flex-row items-center px-3 border-l border-transparent"
               onPress={() => setShowPicker(true)}
             >
               <MaterialCommunityIcons
@@ -61,7 +75,7 @@ export default function HomeHero({ stats }: HomeHeroProps) {
                 size={18}
                 color="#111827"
               />
-              <Text className={`ml-2 flex-1 py-1 text-[14px] font-poppins-semibold ${date ? 'text-slate-900' : 'text-slate-400'}`}>
+              <Text className={`ml-2 flex-1 py-1 text-[14px] font-poppins-semibold ${date ? 'text-slate-900' : 'text-slate-400'}`} numberOfLines={1}>
                 {date ? formatDate(date) : "Any dates"}
               </Text>
             </Pressable>
@@ -86,6 +100,57 @@ export default function HomeHero({ stats }: HomeHeroProps) {
           </View>
         </View>
       </View>
+
+      {/* Country Selection Modal */}
+      <Modal
+        visible={showCountryModal}
+        transparent={true}
+        animationType="slide"
+        onRequestClose={() => setShowCountryModal(false)}
+      >
+        <Pressable 
+          className="flex-1 bg-black/50 justify-end"
+          onPress={() => setShowCountryModal(false)}
+        >
+          <Pressable 
+             className="bg-white rounded-t-3xl min-h-[50%] p-6"
+             onPress={(e) => e.stopPropagation()}
+          >
+            <View className="flex-row items-center justify-between mb-4">
+              <Text className="text-xl font-poppins-bold text-slate-900">Where next?</Text>
+              <Pressable onPress={() => setShowCountryModal(false)} className="w-8 h-8 items-center justify-center bg-slate-100 rounded-full">
+                <MaterialCommunityIcons name="close" size={20} color="#475569" />
+              </Pressable>
+            </View>
+            
+            <FlatList
+              data={COUNTRIES}
+              keyExtractor={(item) => item}
+              showsVerticalScrollIndicator={false}
+              renderItem={({ item }) => {
+                const isSelected = item === country;
+                return (
+                  <Pressable
+                    className={`py-4 border-b border-slate-100 flex-row items-center justify-between ${isSelected ? 'bg-blue-50/50 px-3 -mx-3 rounded-xl border-b-transparent' : ''}`}
+                    onPress={() => {
+                      setCountry(item);
+                      setShowCountryModal(false);
+                    }}
+                  >
+                    <Text className={`text-[15px] ${isSelected ? 'font-poppins-bold text-blue-600' : 'font-poppins-medium text-slate-700'}`}>
+                      {item}
+                    </Text>
+                    {isSelected && <MaterialCommunityIcons name="check-circle" size={20} color="#2563EB" />}
+                  </Pressable>
+                );
+              }}
+            />
+          </Pressable>
+        </Pressable>
+      </Modal>
+    </View>
+  );
+}
       {/*
       <View className="mt-4 flex-row flex-wrap justify-between gap-y-2">
         <View className="w-[49%] rounded-xl border border-blue-300 bg-white/20 px-3 py-2.5">
@@ -122,6 +187,3 @@ export default function HomeHero({ stats }: HomeHeroProps) {
         </View>
       
       </View>   */}
-    </View>
-  );
-}
