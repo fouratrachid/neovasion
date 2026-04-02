@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useState } from "react";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { Pressable, Text, TextInput, View } from "react-native";
+import { Platform, Pressable, Text, TextInput, View } from "react-native";
+import DateTimePicker from "@react-native-community/datetimepicker";
 
 import { HomeStats } from "./types";
 
@@ -9,16 +10,30 @@ type HomeHeroProps = {
 };
 
 export default function HomeHero({ stats }: HomeHeroProps) {
+  const [date, setDate] = useState<Date | null>(null);
+  const [showPicker, setShowPicker] = useState(false);
+
+  const onChangeDate = (event: any, selectedDate?: Date) => {
+    setShowPicker(false); // Close on selection
+    if (selectedDate) {
+      setDate(selectedDate);
+    }
+  };
+
+  const formatDate = (date: Date) => {
+    return date.toLocaleDateString('en-US', {
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric'
+    });
+  };
+
   return (
     <View className=" bg-slate-100 px-4 pb-7 pt-4">
       <View className="rounded-3xl border border-[#274A93] bg-[#0A2B72] px-4 py-6">
         <Text className="text-center text-white text-xl font-poppins-bold">
           Discover Your Next Adventure
         </Text>
-        {/* <Text className="mt-3 px-3 text-center text-[14px] leading-5 text-blue-100">
-          Explore breathtaking destinations, share your travel stories, and
-          connect with fellow adventurers around the globe.
-        </Text> */}
 
         <View className="mt-6 rounded-2xl bg-white px-3 py-3">
           <View className="flex-row items-center">
@@ -37,18 +52,29 @@ export default function HomeHero({ stats }: HomeHeroProps) {
 
             <View className="h-7 w-px bg-slate-200" />
 
-            <View className="flex-1 flex-row items-center px-3">
+            <Pressable 
+              className="flex-1 flex-row items-center px-3"
+              onPress={() => setShowPicker(true)}
+            >
               <MaterialCommunityIcons
                 name="calendar-month-outline"
                 size={18}
                 color="#111827"
               />
-              <TextInput
-                placeholder="MM/DD/YYYY"
-                placeholderTextColor="#94A3B8"
-                className="ml-2 flex-1 py-1 text-[14px] font-poppins-semibold text-slate-900"
+              <Text className={`ml-2 flex-1 py-1 text-[14px] font-poppins-semibold ${date ? 'text-slate-900' : 'text-slate-400'}`}>
+                {date ? formatDate(date) : "Any dates"}
+              </Text>
+            </Pressable>
+
+            {showPicker && (
+              <DateTimePicker
+                value={date || new Date()}
+                mode="date"
+                display="default"
+                onChange={onChangeDate}
+                minimumDate={new Date()}
               />
-            </View>
+            )}
 
             <Pressable className="ml-1 h-11 w-11 items-center justify-center rounded-xl border border-slate-200 bg-white active:opacity-70">
               <MaterialCommunityIcons
