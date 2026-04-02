@@ -1,6 +1,5 @@
 import { LanguageModal } from "@/components/common/LanguageModal";
 import { useI18nContext } from "@/contexts/I18nContext";
-import { useAuth } from "@/hooks/auth/useAuth";
 import { useAlert } from "@/hooks/useAlert";
 import { useRTLLayout } from "@/hooks/useRTLLayout";
 import { colors } from "@/constants/Colors";
@@ -25,8 +24,6 @@ import { ThemeToggle } from "@/components/ThemeToggle";
 export default function SignUpScreen() {
   const { t } = useTranslation("auth");
   const { showAlert } = useAlert();
-  const { sendOtp, isLoading } = useAuth();
-  const { layoutStyles, isRTL } = useRTLLayout();
   const colorScheme = useColorScheme();
 
   const [firstName, setFirstName] = useState("");
@@ -54,32 +51,7 @@ export default function SignUpScreen() {
     return Object.keys(errors).length === 0;
   };
 
-  const handleSignUp = async () => {
-    if (!validateForm()) return;
-
-    try {
-      await sendOtp({
-        FirstName: firstName,
-        LastName: lastName,
-        email,
-      });
-
-      router.push({
-        pathname: "/(auth)/otp",
-        params: { email },
-      });
-    } catch (err) {
-      showAlert({
-        title: t("auth.signUp.failedTitle") || "Sign Up Failed",
-        message:
-          err instanceof Error
-            ? err.message
-            : t("auth.signUp.errorCreating") || "Error creating account",
-        icon: "alert-circle",
-        iconColor: colors.error[500],
-      });
-    }
-  };
+  const handleSignUp = async () => {};
 
   return (
     <SafeAreaView className="flex-1 bg-white dark:bg-dark-900">
@@ -196,15 +168,7 @@ export default function SignUpScreen() {
           <TouchableOpacity
             onPress={handleSignUp}
             className="bg-primary-500 rounded-full py-3.5 items-center shadow-lg shadow-primary-500/30 mb-6"
-          >
-            {isLoading ? (
-              <ActivityIndicator color="white" />
-            ) : (
-              <Text className="text-white font-bold text-lg">
-                {t("auth.signUp.submit") || "Sign Up"}
-              </Text>
-            )}
-          </TouchableOpacity>
+          ></TouchableOpacity>
 
           <View className="flex-row justify-center items-center">
             <Text className="text-neutral-500 dark:text-dark-300 mr-1">

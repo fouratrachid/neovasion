@@ -1,6 +1,5 @@
 import { LanguageModal } from "@/components/common/LanguageModal";
 import { useI18nContext } from "@/contexts/I18nContext";
-import { useAuthStore } from "@/stores/authStore";
 import { useAlert } from "@/hooks/useAlert";
 import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
@@ -22,8 +21,7 @@ import { ThemeToggle } from "@/components/ThemeToggle";
 
 export default function SignInScreen() {
   const { t } = useTranslation("auth");
-  const { showAlert } = useAlert();
-  const { sendOtp, isLoading } = useAuthStore();
+
   const colorScheme = useColorScheme();
 
   const [email, setEmail] = useState("");
@@ -151,17 +149,8 @@ export default function SignInScreen() {
           {/* Continue Button */}
           <TouchableOpacity
             onPress={handleLogin}
-            disabled={isLoading}
             className="bg-primary-500 rounded-full py-3.5 items-center shadow-lg shadow-primary-500/30 mb-6"
-          >
-            {isLoading ? (
-              <ActivityIndicator color="white" />
-            ) : (
-              <Text className="text-white font-bold text-lg">
-                {t("auth.signIn.submit") || "Continue"}
-              </Text>
-            )}
-          </TouchableOpacity>
+          ></TouchableOpacity>
 
           <View className="flex-row justify-center items-center mt-4">
             <Text className="text-neutral-500 dark:text-neutral-400">

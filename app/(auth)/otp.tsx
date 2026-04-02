@@ -1,14 +1,10 @@
 import { colors } from "@/constants/Colors";
-import { useAuthStore } from "@/stores/authStore";
-import { useAlert } from "@/hooks/useAlert";
 import { Ionicons } from "@expo/vector-icons";
 import { router, useLocalSearchParams } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import React, { useState, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import {
-  ActivityIndicator,
-  Keyboard,
   Text,
   TextInput,
   TouchableOpacity,
@@ -24,8 +20,6 @@ import { useI18nContext } from "@/contexts/I18nContext";
 export default function OtpScreen() {
   const { t } = useTranslation("auth");
   const { email } = useLocalSearchParams<{ email: string }>();
-  const { verifyOtp, isLoading } = useAuthStore();
-  const { showAlert } = useAlert();
   const colorScheme = useColorScheme();
 
   const [code, setCode] = useState("");
@@ -36,32 +30,7 @@ export default function OtpScreen() {
     useI18nContext();
   const [showLanguageModal, setShowLanguageModal] = useState(false);
 
-  const handleVerify = async () => {
-    if (code.length !== 8) {
-      showAlert({
-        title: t("auth.otp.invalidTitle") || "Invalid Code",
-        message:
-          t("auth.otp.invalidMessage") || "Please enter an 8-character code.",
-        icon: "alert-circle",
-        iconColor: colors.error[500],
-      });
-      return;
-    }
-    Keyboard.dismiss();
-    try {
-      await verifyOtp(email || "", code);
-    } catch (err) {
-      showAlert({
-        title: t("auth.otp.errorTitle") || "Error",
-        message:
-          err instanceof Error
-            ? err.message
-            : t("auth.otp.verificationFailed") || "Verification failed",
-        icon: "alert-circle",
-        iconColor: colors.error[500],
-      });
-    }
-  };
+  const handleVerify = async () => {};
 
   return (
     <SafeAreaView
@@ -145,17 +114,9 @@ export default function OtpScreen() {
 
           <TouchableOpacity
             onPress={handleVerify}
-            disabled={isLoading || code.length !== 8}
+            disabled={code.length !== 8}
             className={`rounded-full py-3.5 items-center shadow-lg ${code.length === 8 ? "bg-primary-500 shadow-primary-500/30" : "bg-neutral-300 dark:bg-dark-700 shadow-none"}`}
-          >
-            {isLoading ? (
-              <ActivityIndicator color="white" />
-            ) : (
-              <Text className="text-white font-bold text-lg">
-                {t("auth.otp.verifyButton") || "Verify Code"}
-              </Text>
-            )}
-          </TouchableOpacity>
+          ></TouchableOpacity>
 
           <View className="mt-6 flex-row justify-center">
             <Text className="text-neutral-500 dark:text-neutral-400">
