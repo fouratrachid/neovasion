@@ -1,6 +1,5 @@
 import { colors } from "@/constants/Colors";
-import { useAuthStore } from "@/stores/authStore";
-import { useGetProfile } from "@/hooks/api/useUserApi";
+
 import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import React, { memo } from "react";
@@ -34,8 +33,6 @@ const ProfileDropDown = memo(
     onPressChangeLanguage,
   }: ProfileDropDownProps) => {
     const { t } = useTranslation();
-    const { user, logout } = useAuthStore();
-    const { data: profile, isLoading } = useGetProfile();
 
     const displayUser = profile || user;
 
@@ -53,7 +50,6 @@ const ProfileDropDown = memo(
 
     const handleLogout = async () => {
       onClose();
-      await logout();
     };
 
     const handleJosoorPress = () => {
@@ -92,60 +88,54 @@ const ProfileDropDown = memo(
           >
             {/* Header Section (Account Screen Header Style) */}
             <View className="p-4 border-b border-neutral-50 dark:border-dark-700">
-              {isLoading ? (
-                <View className="items-center py-4">
-                  <ActivityIndicator size="small" color={colors.primary[500]} />
+              <View className="flex-row items-center">
+                {/* Avatar */}
+                <View className="w-14 h-14 rounded-full bg-primary-100 dark:bg-primary-900/30 items-center justify-center overflow-hidden">
+                  {userImage ? (
+                    <Image
+                      source={{ uri: userImage }}
+                      className="w-full h-full"
+                    />
+                  ) : (
+                    <Ionicons
+                      name="person"
+                      size={28}
+                      color={colors.primary[500]}
+                    />
+                  )}
                 </View>
-              ) : (
-                <View className="flex-row items-center">
-                  {/* Avatar */}
-                  <View className="w-14 h-14 rounded-full bg-primary-100 dark:bg-primary-900/30 items-center justify-center overflow-hidden">
-                    {userImage ? (
-                      <Image
-                        source={{ uri: userImage }}
-                        className="w-full h-full"
-                      />
-                    ) : (
-                      <Ionicons
-                        name="person"
-                        size={28}
-                        color={colors.primary[500]}
-                      />
-                    )}
-                  </View>
 
-                  {/* User Details */}
-                  <View className="flex-1 ml-3">
-                    <Text
-                      className="text-lg font-bold text-neutral-900 dark:text-white"
-                      numberOfLines={1}
-                    >
-                      {userName}
-                    </Text>
-                    <Text
-                      className="text-xs text-neutral-500 dark:text-neutral-400 mt-0.5"
-                      numberOfLines={1}
-                    >
-                      {userEmail}
-                    </Text>
-                    {displayUser?.role && (
-                      <View className="mt-1">
-                        <Text className="text-xs font-medium text-primary-500 dark:text-primary-400">
-                          {displayUser.role}
-                        </Text>
-                      </View>
-                    )}
-                  </View>
-
-                  {/* Edit Button (Account Screen Style) */}
-                  <TouchableOpacity
-                    onPress={handleEditProfile}
-                    className="w-8 h-8 rounded-full bg-primary-500 items-center justify-center"
+                {/* User Details */}
+                <View className="flex-1 ml-3">
+                  <Text
+                    className="text-lg font-bold text-neutral-900 dark:text-white"
+                    numberOfLines={1}
                   >
-                    <Ionicons name="pencil" size={14} color="white" />
-                  </TouchableOpacity>
+                    {userName}
+                  </Text>
+                  <Text
+                    className="text-xs text-neutral-500 dark:text-neutral-400 mt-0.5"
+                    numberOfLines={1}
+                  >
+                    {userEmail}
+                  </Text>
+                  {displayUser?.role && (
+                    <View className="mt-1">
+                      <Text className="text-xs font-medium text-primary-500 dark:text-primary-400">
+                        {displayUser.role}
+                      </Text>
+                    </View>
+                  )}
                 </View>
-              )}
+
+                {/* Edit Button (Account Screen Style) */}
+                <TouchableOpacity
+                  onPress={handleEditProfile}
+                  className="w-8 h-8 rounded-full bg-primary-500 items-center justify-center"
+                >
+                  <Ionicons name="pencil" size={14} color="white" />
+                </TouchableOpacity>
+              </View>
             </View>
 
             {/* Menu Items */}
