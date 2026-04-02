@@ -7,6 +7,7 @@ import {
     Text,
     View,
     ViewToken,
+    Pressable,
 } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
@@ -20,6 +21,8 @@ type AccommodationDetailCardProps = {
 const { width: SCREEN_WIDTH } = Dimensions.get("window");
 const IMAGE_WIDTH = SCREEN_WIDTH - 32;
 const IMAGE_HEIGHT = 220;
+
+import { router } from "expo-router";
 
 export default function AccommodationDetailCard({ item }: AccommodationDetailCardProps) {
     const [activeImageIndex, setActiveImageIndex] = useState(0);
@@ -41,7 +44,7 @@ export default function AccommodationDetailCard({ item }: AccommodationDetailCar
     const viewabilityConfig = useRef({ viewAreaCoveragePercentThreshold: 50 }).current;
 
     return (
-        <View
+        <Pressable
             className="mx-4 mb-5 overflow-hidden rounded-3xl bg-white"
             style={{
                 shadowColor: "#064E3B",
@@ -50,6 +53,7 @@ export default function AccommodationDetailCard({ item }: AccommodationDetailCar
                 shadowRadius: 16,
                 elevation: 5,
             }}
+            onPress={() => router.push(`/accommodation/${item._id}` as any)}
         >
             {/* Carousel */}
             {files.length > 0 && (
@@ -219,7 +223,28 @@ export default function AccommodationDetailCard({ item }: AccommodationDetailCar
                         </View>
                     </View>
                 )}
+
+                {/* Footer Action */}
+                <View className="mt-5 border-t border-slate-100 pt-4 flex-row justify-between items-center">
+                    <Text className="text-emerald-600 font-poppins-semibold text-[13px]">
+                        {activeServices.length + activeOptions.length} Amenities
+                    </Text>
+                    <Pressable
+                        className="bg-emerald-600 px-5 py-2.5 rounded-xl active:opacity-80 flex-row items-center"
+                        style={{
+                            shadowColor: "#059669",
+                            shadowOffset: { width: 0, height: 2 },
+                            shadowOpacity: 0.2,
+                            shadowRadius: 4,
+                            elevation: 3,
+                        }}
+                        onPress={() => router.push(`/accommodation/${item._id}` as any)}
+                    >
+                        <Text className="text-white font-poppins-bold text-[12px]">View Details</Text>
+                        <MaterialCommunityIcons name="arrow-right" size={14} color="white" className="ml-1" />
+                    </Pressable>
+                </View>
             </View>
-        </View>
+        </Pressable>
     );
 }
