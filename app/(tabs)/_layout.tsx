@@ -12,7 +12,7 @@ type CustomTabBarIconProps = {
   focused: boolean;
   color: string;
   size: number;
-  iconName: string;
+  iconName: React.ComponentProps<typeof Ionicons>["name"];
   badgeCount?: number;
 };
 
@@ -25,14 +25,28 @@ const CustomTabBarIcon = memo(
     badgeCount = 0,
   }: CustomTabBarIconProps) => {
     const { isRTL } = useI18nContext();
+    const iconContainerSize = focused ? 34 : 30;
 
     return (
       <View style={{ alignItems: "center", justifyContent: "center" }}>
-        <Ionicons
-          name={iconName}
-          size={focused ? size + 2 : size}
-          color={color}
-        />
+        <View
+          style={{
+            width: iconContainerSize,
+            height: iconContainerSize,
+            borderRadius: 999,
+            alignItems: "center",
+            justifyContent: "center",
+            backgroundColor: focused
+              ? "rgba(40, 101, 209, 0.16)"
+              : "transparent",
+          }}
+        >
+          <Ionicons
+            name={iconName}
+            size={focused ? size + 2 : size}
+            color={color}
+          />
+        </View>
         {badgeCount > 0 && (
           <View
             style={{
@@ -45,6 +59,7 @@ const CustomTabBarIcon = memo(
               justifyContent: "center",
               alignItems: "center",
               paddingHorizontal: 4,
+              marginTop: 10,
               ...(isRTL ? { left: -6 } : { right: -6 }),
             }}
           >
@@ -71,6 +86,7 @@ export default function TabsLayout() {
   const { colorScheme } = useColorScheme();
   const { isRTL } = useI18nContext();
   const insets = useSafeAreaInsets();
+  const isDark = colorScheme === "dark";
 
   return (
     <Tabs
@@ -78,39 +94,94 @@ export default function TabsLayout() {
       screenOptions={{
         headerShown: false,
         tabBarActiveTintColor: colors.primary[500],
-        tabBarInactiveTintColor: colors.neutral[400],
+        tabBarInactiveTintColor: isDark
+          ? colors.neutral[300]
+          : colors.neutral[500],
         tabBarHideOnKeyboard: true,
         tabBarStyle: {
           display: "flex",
-          borderTopWidth: 1,
+          position: "absolute",
+          left: 14,
+          right: 14,
+          bottom: 10,
+          borderTopWidth: 0,
+          borderWidth: 1,
           direction: isRTL ? "rtl" : "ltr",
-          borderTopColor:
-            colorScheme === "dark" ? colors.neutral[800] : colors.neutral[100],
-          backgroundColor:
-            colorScheme === "dark" ? colors.neutral[900] : colors.white,
-          height: (Platform.OS === "ios" ? 60 : 58) + insets.bottom,
+          borderColor: isDark ? colors.neutral[700] : colors.primary[100],
+          backgroundColor: isDark ? "#0F172A" : "#F8FBFF",
+          height: (Platform.OS === "ios" ? 62 : 60) + insets.bottom,
           paddingBottom: Math.max(insets.bottom, 10),
-          paddingTop: 10,
+          paddingTop: 8,
+          borderRadius: 24,
         },
         tabBarShowLabel: true,
         tabBarLabelStyle: {
           writingDirection: isRTL ? "rtl" : "ltr",
-
-          fontSize: 12,
-          fontWeight: "500",
+          fontSize: 11,
+          fontFamily: "AppSemiBold",
+          marginTop: 2,
+        },
+        tabBarItemStyle: {
+          borderRadius: 14,
+          marginHorizontal: 2,
         },
       }}
     >
       <Tabs.Screen
         name="home"
         options={{
-          title: t("tabs.home"),
+          title: t("tabs.home", { defaultValue: "Home" }),
           tabBarIcon: ({ color, focused, size }) => (
             <CustomTabBarIcon
               focused={focused}
               color={color}
               size={size}
-              iconName={focused ? "home" : "home-outline"}
+              iconName={focused ? "compass" : "compass-outline"}
+            />
+          ),
+        }}
+      />
+
+      <Tabs.Screen
+        name="networking"
+        options={{
+          title: "Networking",
+          tabBarIcon: ({ color, focused, size }) => (
+            <CustomTabBarIcon
+              focused={focused}
+              color={color}
+              size={size}
+              iconName={focused ? "chatbubbles" : "chatbubbles-outline"}
+            />
+          ),
+        }}
+      />
+
+      <Tabs.Screen
+        name="trips"
+        options={{
+          title: "Trips",
+          tabBarIcon: ({ color, focused, size }) => (
+            <CustomTabBarIcon
+              focused={focused}
+              color={color}
+              size={size}
+              iconName={focused ? "map" : "map-outline"}
+            />
+          ),
+        }}
+      />
+
+      <Tabs.Screen
+        name="accommodations"
+        options={{
+          title: "Accommodations",
+          tabBarIcon: ({ color, focused, size }) => (
+            <CustomTabBarIcon
+              focused={focused}
+              color={color}
+              size={size}
+              iconName={focused ? "business" : "business-outline"}
             />
           ),
         }}

@@ -3,7 +3,7 @@ import { Redirect } from "expo-router";
 import { ActivityIndicator, View } from "react-native";
 
 export default function MainApp() {
-  const { isAuthenticated, isLoading } = useAuthStore();
+  const { isLoading } = useAuthStore();
 
   if (isLoading) {
     return (
@@ -11,10 +11,6 @@ export default function MainApp() {
         <ActivityIndicator size="large" color="#2865D1" />
       </View>
     );
-  }
-
-  if (!isAuthenticated) {
-    return <Redirect href="/(auth)/sign-in" />;
   }
 
   return <Redirect href="/(tabs)/home" />;

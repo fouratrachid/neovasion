@@ -29,7 +29,11 @@ module.exports = {
         sans: ['AppRegular'],
         medium: ['AppMedium'],
         semibold: ['AppSemiBold'],
-        bold: ['AppBold'], // Maps 'font-bold' class to AppBold family
+        bold: ['AppBold'],
+        poppins: ['Poppins_400Regular'],
+        'poppins-medium': ['Poppins_500Medium'],
+        'poppins-semibold': ['Poppins_600SemiBold'],
+        'poppins-bold': ['Poppins_700Bold'],
         cairo: ['Cairo_400Regular'],
         'cairo-medium': ['Cairo_500Medium'],
         'cairo-semibold': ['Cairo_600SemiBold'],

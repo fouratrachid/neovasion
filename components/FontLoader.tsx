@@ -5,24 +5,23 @@ import {
   Cairo_700Bold,
 } from "@expo-google-fonts/cairo";
 import {
-  TitilliumWeb_400Regular,
-  TitilliumWeb_600SemiBold,
-  TitilliumWeb_700Bold,
+  Poppins_400Regular,
+  Poppins_500Medium,
+  Poppins_600SemiBold,
+  Poppins_700Bold,
   useFonts,
-} from "@expo-google-fonts/titillium-web";
+} from "@expo-google-fonts/poppins";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as Localization from "expo-localization";
 import { useEffect, useState } from "react";
 
-import {
-  AppRegistry,
-  Text,
-  TextInput,
-  View,
-  ActivityIndicator,
-} from "react-native";
+import { Text, TextInput, View, ActivityIndicator } from "react-native";
 
-export default function FontLoader({ children }: { children: React.ReactNode }) {
+export default function FontLoader({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   const [language, setLanguage] = useState<string | null>(null);
 
   useEffect(() => {
@@ -32,10 +31,12 @@ export default function FontLoader({ children }: { children: React.ReactNode }) 
         if (savedLanguage) {
           setLanguage(savedLanguage);
         } else {
-          const deviceLocale = Localization.getLocales()[0]?.languageCode ?? "fr";
+          const deviceLocale =
+            Localization.getLocales()[0]?.languageCode ?? "fr";
           setLanguage(deviceLocale);
         }
       } catch (e) {
+        console.log("Error loading language, defaulting to French:", e);
         setLanguage("fr");
       }
     };
@@ -56,19 +57,18 @@ function FontLoaderInner({
   language: string;
   children: React.ReactNode;
 }) {
-  const isArabic = language === "ar";
-
   const [loaded] = useFonts({
-    // Map generic names to specific fonts based on language
-    AppRegular: isArabic ? Cairo_400Regular : TitilliumWeb_400Regular,
-    AppMedium: isArabic ? Cairo_500Medium : TitilliumWeb_600SemiBold,
-    AppSemiBold: isArabic ? Cairo_600SemiBold : TitilliumWeb_600SemiBold,
-    AppBold: isArabic ? Cairo_700Bold : TitilliumWeb_700Bold,
+    // Global app font family: Poppins
+    AppRegular: Poppins_400Regular,
+    AppMedium: Poppins_500Medium,
+    AppSemiBold: Poppins_600SemiBold,
+    AppBold: Poppins_700Bold,
 
-    // Keep originals accessible
-    TitilliumWeb_400Regular,
-    TitilliumWeb_600SemiBold,
-    TitilliumWeb_700Bold,
+    // Keep explicit families accessible when needed
+    Poppins_400Regular,
+    Poppins_500Medium,
+    Poppins_600SemiBold,
+    Poppins_700Bold,
     Cairo_400Regular,
     Cairo_500Medium,
     Cairo_600SemiBold,
@@ -87,7 +87,7 @@ function FontLoaderInner({
       if (TextInput.defaultProps == null) TextInput.defaultProps = {};
       // @ts-ignore
       TextInput.defaultProps.style = { fontFamily: "AppRegular" };
-      
+
       setReady(true);
     }
   }, [loaded]);
@@ -103,9 +103,14 @@ function FontLoaderInner({
         }}
       >
         <ActivityIndicator size="large" color="#2865D1" />
-        <Text style={{ marginTop: 16, fontSize: 16, color: "#001533", fontFamily: "AppRegular" }}>
-          Initializing...
-        </Text>
+        <Text
+          style={{
+            marginTop: 16,
+            fontSize: 16,
+            color: "#001533",
+            fontFamily: "AppRegular",
+          }}
+        ></Text>
       </View>
     );
   }

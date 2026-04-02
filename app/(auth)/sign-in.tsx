@@ -2,7 +2,6 @@ import { LanguageModal } from "@/components/common/LanguageModal";
 import { useI18nContext } from "@/contexts/I18nContext";
 import { useAuthStore } from "@/stores/authStore";
 import { useAlert } from "@/hooks/useAlert";
-import { colors } from "@/constants/Colors";
 import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import { StatusBar } from "expo-status-bar";
@@ -11,7 +10,6 @@ import { useTranslation } from "react-i18next";
 import {
   ActivityIndicator,
   Image,
-  Keyboard,
   ScrollView,
   Text,
   TextInput,
