@@ -2,7 +2,6 @@ import { I18nProvider } from "@/contexts/I18nContext";
 import { AlertProvider } from "@/hooks/useAlert";
 import { useColorScheme } from "@/hooks/useColorScheme";
 import { QueryProvider } from "@/providers/QueryProvider";
-import { useAuthStore } from "@/stores/authStore";
 import { initI18n } from "@/utils/i18n";
 import FontLoader from "@/components/FontLoader";
 import {
@@ -22,7 +21,6 @@ import "../global.css";
 LogBox.ignoreAllLogs(true);
 
 export default function RootLayout() {
-  const { loadStoredAuth } = useAuthStore();
   const { colorScheme } = useColorScheme();
   const [i18nInitialized, setI18nInitialized] = useState(false);
 
@@ -31,11 +29,6 @@ export default function RootLayout() {
       setI18nInitialized(true);
     });
   }, []);
-
-  useEffect(() => {
-    console.log("Root layout loading stored auth...");
-    loadStoredAuth();
-  }, [loadStoredAuth]);
 
   if (!i18nInitialized) {
     return (
