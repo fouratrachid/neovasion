@@ -9,6 +9,7 @@ import {
     View,
     ViewToken,
 } from "react-native";
+import { router } from "expo-router";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 
@@ -52,7 +53,7 @@ export default function TripDetailCard({ trip }: TripDetailCardProps) {
     const viewabilityConfig = useRef({ viewAreaCoveragePercentThreshold: 50 }).current;
 
     return (
-        <View
+        <Pressable
             className="mx-4 mb-5 overflow-hidden rounded-3xl bg-white"
             style={{
                 shadowColor: "#1E3A5F",
@@ -61,6 +62,7 @@ export default function TripDetailCard({ trip }: TripDetailCardProps) {
                 shadowRadius: 16,
                 elevation: 5,
             }}
+            onPress={() => router.push(`/trip/${trip._id}` as any)}
         >
             {/* Image Carousel */}
             {images.length > 0 && (
@@ -422,6 +424,10 @@ export default function TripDetailCard({ trip }: TripDetailCardProps) {
                                 shadowRadius: 4,
                                 elevation: 3,
                             }}
+                            onPress={() => {
+                                // navigate to trip details
+                                router.push(`/trip/${trip._id}` as any);
+                            }}
                         >
                             <Text className="text-white text-[12px] font-poppins-bold">
                                 View
@@ -430,6 +436,6 @@ export default function TripDetailCard({ trip }: TripDetailCardProps) {
                     </View>
                 )}
             </View>
-        </View>
+        </Pressable>
     );
 }
