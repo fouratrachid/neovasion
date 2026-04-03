@@ -41,7 +41,7 @@ class ApiService {
   }
 
   public async request<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
-    // Initialize headers properly
+    // Interceptor now handles token natively 
     const headers: any = {
       'Content-Type': 'application/json',
       ...options.headers,
@@ -93,34 +93,7 @@ class ApiService {
     return this.getToken();
   }
 
-  // ATS Integration Methods
-  async linkATS(): Promise<any> {
-    return this.request('users/profile/link-ats', {
-      method: 'POST',
-    });
-  }
 
-  async unlinkATS(): Promise<any> {
-    return this.request('users/profile/unlink-ats', {
-      method: 'DELETE',
-    });
-  }
-
-  async syncFromATS(data: { atsId: string; firstname: string; lastname: string; email: string }): Promise<any> {
-    return this.request('users/profile/sync-from-ats', {
-      method: 'POST',
-      body: JSON.stringify(data),
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
-  }
-
-  async loginToATS(): Promise<{ success: boolean; data: string }> {
-    return this.request('auth/login-to-ats', {
-      method: 'POST',
-    });
-  }
 }
 
 export const apiService = new ApiService();
