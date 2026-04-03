@@ -1,177 +1,129 @@
-import { LanguageModal } from "@/components/common/LanguageModal";
-import { useI18nContext } from "@/contexts/I18nContext";
-import { useAlert } from "@/hooks/useAlert";
-import { Ionicons } from "@expo/vector-icons";
-import { router } from "expo-router";
-import { StatusBar } from "expo-status-bar";
-import { useState } from "react";
-import { useTranslation } from "react-i18next";
-import {
-  ActivityIndicator,
-  Image,
-  ScrollView,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
-  useColorScheme,
-} from "react-native";
+
+import React, { useState } from "react";
+import { View, Text, TextInput, Pressable, ActivityIndicator, Alert, KeyboardAvoidingView, Platform, ScrollView } from "react-native";
+import { useRouter } from "expo-router";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { ThemeToggle } from "@/components/ThemeToggle";
+import { useAuthStore } from "@/store/authStore";
 
 export default function SignInScreen() {
-  const { t } = useTranslation("auth");
-
-  const colorScheme = useColorScheme();
-
-  const [email, setEmail] = useState("");
-  const [emailError, setEmailError] = useState("");
-  const [generalError, setGeneralError] = useState("");
-
-  // Language
-  const { currentLanguage, changeLanguage, getAvailableLanguages } =
-    useI18nContext();
-  const [showLanguageModal, setShowLanguageModal] = useState(false);
-
-  const validateForm = () => {
-    let isValid = true;
-    setEmailError("");
-    setGeneralError("");
-
-    if (!email) {
-      setEmailError(t("auth.signIn.emailRequired") || "Email is required");
-      isValid = false;
-    } else {
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      if (!emailRegex.test(email)) {
-        setEmailError(
-          t("auth.signIn.invalidEmail") || "Please enter a valid email address",
-        );
-        isValid = false;
-      }
-    }
-
-    return isValid;
-  };
+  const router = useRouter();
+  const { login, isLoginLoading } = useAuthStore();
+  
+  const [email, setEmail] = useState("mohsen@gmail.com"); 
+  const [password, setPassword] = useState("123456");
+  const [secureTextEntry, setSecureTextEntry] = useState(true);
 
   const handleLogin = async () => {
-    router.push({
-      pathname: "/(tabs)/home",
-    });
+    if (!email || !password) {
+      Alert.alert("Missing Fields", "Please enter both your email and password.");
+      return;
+    }
+
+    try {
+      await login(email.trim(), password);
+      // Let the Root Layout router watcher take control upon successful authentication
+      router.replace("/(tabs)/home");
+    } catch (error: any) {
+      Alert.alert("Login Failed", error.message || "Invalid credentials. Please try again.");
+    } 
   };
 
   return (
-    <SafeAreaView className="flex-1 bg-white dark:bg-dark-900">
-      <StatusBar style="auto" />
-      <ScrollView
-        contentContainerStyle={{ flexGrow: 1, paddingBottom: 20 }}
-        showsVerticalScrollIndicator={false}
-        keyboardShouldPersistTaps="handled"
-        className="px-6"
+    <SafeAreaView className="flex-1 bg-slate-50" edges={["top", "bottom"]}>
+      <KeyboardAvoidingView 
+        behavior={Platform.OS === "ios" ? "padding" : "height"} 
+        className="flex-1"
       >
-        {/* Top Bar */}
-        <View className="pt-4 flex-row justify-between items-center mb-6">
-          <View />
-          <View className="flex-row items-center gap-2">
-            <ThemeToggle />
-            <TouchableOpacity
-              onPress={() => setShowLanguageModal(true)}
-              className="flex-row items-center space-x-1"
+        <ScrollView contentContainerStyle={{ flexGrow: 1 }} showsVerticalScrollIndicator={false}>
+          {/* Header Graphic/Back */}
+          <View className="px-6 pt-10 pb-8 flex-row items-center">
+            <Pressable 
+              onPress={() => router.back()}
+              className="w-10 h-10 bg-white border border-slate-200 rounded-full items-center justify-center -ml-2"
             >
-              <Text className="text-neutral-900 dark:text-white font-medium uppercase">
-                {currentLanguage}
+              <MaterialCommunityIcons name="arrow-left" size={24} color="#334155" />
+            </Pressable>
+          </View>
+
+          {/* Form Content */}
+          <View className="flex-1 px-6">
+            <View className="mb-10">
+              <Text className="text-[32px] font-poppins-bold text-slate-900 leading-[44px]">
+                Welcome {"\n"}Back!
               </Text>
-              <Ionicons
-                name="chevron-down"
-                size={16}
-                className="text-neutral-900 dark:text-white"
-              />
-            </TouchableOpacity>
-          </View>
-        </View>
-
-        <View className="flex-1 justify-center">
-          {/* Logo Area */}
-          <View className="items-center mb-12 mt-10">
-            <Image
-              source={
-                colorScheme === "dark"
-                  ? require("@/assets/images/logo-dark.png")
-                  : require("@/assets/images/logo-light.png")
-              }
-              className="w-32 h-32 mb-4"
-              resizeMode="contain"
-            />
-            <Text className="text-3xl font-bold text-neutral-900 dark:text-white mb-2 text-center">
-              {t("auth.signIn.title") || "Welcome back"}
-            </Text>
-            <Text className="text-neutral-500 dark:text-neutral-400 text-center">
-              {t("auth.signIn.subtitle") || "Enter your email to sign in"}
-            </Text>
-          </View>
-
-          {/* Form Fields */}
-          <View className="gap-5 mb-8">
-            {/* Email */}
-            <View>
-              <View className="flex-row items-center bg-neutral-50 dark:bg-dark-800 border border-neutral-200 dark:border-dark-700 rounded-2xl px-4 py-3.5">
-                <Ionicons name="mail" size={20} color="#9CA3AF" />
-                <TextInput
-                  placeholder={
-                    t("auth.signIn.emailPlaceholder") || "Email address"
-                  }
-                  placeholderTextColor="#9CA3AF"
-                  className="flex-1 ml-3 text-base text-neutral-900 dark:text-white font-medium"
-                  value={email}
-                  onChangeText={(text) => {
-                    setEmail(text);
-                    setEmailError("");
-                  }}
-                  autoCapitalize="none"
-                  keyboardType="email-address"
-                  autoCorrect={false}
-                />
-              </View>
-              {emailError ? (
-                <Text className="text-error-500 text-xs mt-1 ml-1">
-                  {emailError}
-                </Text>
-              ) : null}
+              <Text className="text-[15px] font-poppins-medium text-slate-500 mt-2">
+                Sign in to continue planning your trips.
+              </Text>
             </View>
 
-            {generalError ? (
-              <Text className="text-error-500 text-center text-sm">
-                {generalError}
-              </Text>
-            ) : null}
+            <View className="space-y-5">
+              {/* Email Input */}
+              <View>
+                <Text className="text-[13px] font-poppins-bold text-slate-700 mb-1.5 uppercase tracking-wider ml-1">Email</Text>
+                <View className="flex-row items-center bg-white border border-slate-200 rounded-2xl px-4 py-1 h-14 tracking-wide shadow-sm" style={{ shadowColor: "#94A3B8", shadowOpacity: 0.1, shadowRadius: 3, shadowOffset: { width: 0, height: 1 } }}>
+                  <MaterialCommunityIcons name="email-outline" size={22} color="#64748B" />
+                  <TextInput
+                    value={email}
+                    onChangeText={setEmail}
+                    placeholder="Enter your email"
+                    placeholderTextColor="#94A3B8"
+                    keyboardType="email-address"
+                    autoCapitalize="none"
+                    className="flex-1 ml-3 text-[15px] font-poppins-medium text-slate-900 h-full"
+                  />
+                </View>
+              </View>
+
+              {/* Password Input */}
+              <View className="mt-5">
+                <Text className="text-[13px] font-poppins-bold text-slate-700 mb-1.5 uppercase tracking-wider ml-1">Password</Text>
+                <View className="flex-row items-center bg-white border border-slate-200 rounded-2xl px-4 py-1 h-14 shadow-sm" style={{ shadowColor: "#94A3B8", shadowOpacity: 0.1, shadowRadius: 3, shadowOffset: { width: 0, height: 1 } }}>
+                  <MaterialCommunityIcons name="lock-outline" size={22} color="#64748B" />
+                  <TextInput
+                    value={password}
+                    onChangeText={setPassword}
+                    placeholder="Enter your password"
+                    placeholderTextColor="#94A3B8"
+                    secureTextEntry={secureTextEntry}
+                    className="flex-1 ml-3 text-[15px] font-poppins-medium text-slate-900 h-full"
+                  />
+                  <Pressable onPress={() => setSecureTextEntry(!secureTextEntry)} className="p-1">
+                    <MaterialCommunityIcons name={secureTextEntry ? "eye-off-outline" : "eye-outline"} size={22} color="#94A3B8" />
+                  </Pressable>
+                </View>
+                
+                <Pressable className="mt-3 items-end">
+                   <Text className="text-blue-600 font-poppins-semibold text-[13px]">Forgot Password?</Text>
+                </Pressable>
+              </View>
+            </View>
+
+            {/* Action Buttons */}
+            <View className="mt-10">
+              <Pressable 
+                onPress={handleLogin}
+                disabled={isLoginLoading}
+                className="h-14 bg-blue-600 rounded-2xl items-center justify-center shadow-sm"
+                style={{ shadowColor: "#2563EB", shadowOpacity: 0.3, shadowRadius: 8, shadowOffset: { width: 0, height: 4 }, opacity: isLoginLoading ? 0.7 : 1 }}
+              >
+                {isLoginLoading ? (
+                  <ActivityIndicator color="white" />
+                ) : (
+                  <Text className="text-white text-[16px] font-poppins-bold">Login</Text>
+                )}
+              </Pressable>
+
+              <View className="mt-8 flex-row items-center justify-center">
+                <Text className="text-slate-500 font-poppins-medium text-[14px]">Don't have an account? </Text>
+                <Pressable onPress={() => router.push("/(auth)/sign-up")}>
+                  <Text className="text-blue-600 font-poppins-bold text-[14px]">Sign Up</Text>
+                </Pressable>
+              </View>
+            </View>
           </View>
-
-          {/* Continue Button */}
-          <TouchableOpacity
-            onPress={handleLogin}
-            className="bg-primary-500 rounded-full py-3.5 items-center shadow-lg shadow-primary-500/30 mb-6"
-          ></TouchableOpacity>
-
-          <View className="flex-row justify-center items-center mt-4">
-            <Text className="text-neutral-500 dark:text-neutral-400">
-              {t("auth.signIn.noAccount") || "Don't have an account?"}{" "}
-            </Text>
-            <TouchableOpacity onPress={() => router.push("/(auth)/sign-up")}>
-              <Text className="text-primary-500 font-bold">
-                {t("auth.signIn.signUpLink") || "Sign Up"}
-              </Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      </ScrollView>
-
-      <LanguageModal
-        visible={showLanguageModal}
-        onClose={() => setShowLanguageModal(false)}
-        currentLanguage={currentLanguage}
-        onSelectLanguage={(lang) => changeLanguage(lang as any)}
-        availableLanguages={getAvailableLanguages()}
-      />
+        </ScrollView>
+      </KeyboardAvoidingView>
     </SafeAreaView>
   );
 }
