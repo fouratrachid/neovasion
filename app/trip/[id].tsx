@@ -4,6 +4,7 @@ import { useLocalSearchParams, useRouter } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
+import dayjs from "dayjs";
 
 import { useTripDetails } from "@/hooks/useTripDetails";
 import { formatTripDate, getDurationDays, getTripTypeConfig, getInitials, renderStars } from "@/components/trips/helpers";
@@ -139,56 +140,93 @@ export default function TripDetailsScreen() {
                         </View>
                     )}
 
-                    {/* Destination Stays (Hebergements) */}
-                    {trip.destination && trip.destination.length > 0 && trip.destination[0].hebergement && trip.destination[0].hebergement.length > 0 && (
-                        <View className="mt-8">
-                            <Text className="text-[16px] font-poppins-bold text-slate-900 mb-3">Where You'll Stay</Text>
-                            <View className="gap-y-4">
-                                {trip.destination[0].hebergement.map((stay, idx) => {
-                                    const hData = stay.hebergement_data;
-                                    if (!hData) return null;
-                                    
-                                    return (
-                                        <View key={idx} className="border border-slate-200 rounded-2xl overflow-hidden">
-                                            {hData.files && hData.files.length > 0 && (
-                                                <Image 
-                                                    source={{ uri: hData.files[0].link }} 
-                                                    className="w-full h-40" 
-                                                    resizeMode="cover" 
-                                                />
-                                            )}
-                                            <View className="p-4">
-                                                <View className="flex-row items-center justify-between">
-                                                    <Text className="text-[16px] font-poppins-bold text-slate-900 flex-1">{hData.name}</Text>
-                                                    <View className="bg-blue-50 px-2 py-1 rounded">
-                                                        <Text className="text-blue-700 text-[10px] font-poppins-bold uppercase">{hData.type}</Text>
-                                                    </View>
-                                                </View>
-                                                
-                                                {hData.description && (
-                                                    <Text className="mt-2 text-[13px] text-slate-600 font-poppins-regular leading-5" numberOfLines={3}>
-                                                        {hData.description}
-                                                    </Text>
-                                                )}
-                                                
-                                                {(hData.services && hData.services.length > 0) && (
-                                                    <View className="mt-3 flex-row flex-wrap gap-2">
-                                                        {hData.services.filter(s => s.status).map((srv, i) => (
-                                                            <View key={i} className="flex-row items-center bg-slate-50 px-2 py-1 rounded border border-slate-100">
-                                                                <MaterialCommunityIcons 
-                                                                    name={srv.name.toLowerCase().includes('wifi') ? 'wifi' : 'check'} 
-                                                                    size={12} 
-                                                                    color="#64748B" 
-                                                                />
-                                                                <Text className="ml-1 text-slate-500 text-[11px] font-poppins-medium">{srv.name}</Text>
-                                                            </View>
-                                                        ))}
-                                                    </View>
-                                                )}
+                    {/* Itinerary */}
+                    {trip.destination && trip.destination.length > 0 && (
+                        <View className="mt-8 relative">
+                            <View className="flex-row items-center mb-6">
+                                <MaterialCommunityIcons name="map-marker-path" size={22} color="#0369A1" />
+                                <Text className="text-[18px] font-poppins-bold text-slate-900 ml-2">Itinerary</Text>
+                            </View>
+
+                            <View className="pl-1 relative">
+                                {/* Timeline Background Line */}
+                                <View className="absolute left-5 top-4 bottom-8 w-0.5 bg-sky-100 z-0" />
+                                
+                                {trip.destination.map((dest, i) => (
+                                    <View key={dest.id || i} className="flex-row mb-6 relative z-10">
+                                        <View className="w-10 items-center mr-3 mt-0.5 z-10">
+                                            <View className="w-8 h-8 rounded-full bg-blue-50 border-2 border-white items-center justify-center" style={{ elevation: 2, shadowColor: '#000', shadowOpacity: 0.1, shadowRadius: 3, shadowOffset: { width: 0, height: 1 } }}>
+                                                <Text className="text-blue-700 font-poppins-bold text-[13px]">{i + 1}</Text>
                                             </View>
                                         </View>
-                                    );
-                                })}
+                                        
+                                        <View className="flex-1 bg-white border border-slate-100 rounded-3xl p-4 shadow-sm" style={{ shadowColor: '#94A3B8', shadowOpacity: 0.1, shadowRadius: 10, shadowOffset: { width: 0, height: 4 }, elevation: 2 }}>
+                                            {/* Date Pill & Location */}
+                                            <View className="flex-row items-start lg:items-center mb-3 flex-wrap">
+                                                <View className="bg-sky-100/60 px-3 py-1 rounded-full mr-2 mb-2 lg:mb-0">
+                                                    <Text className="text-sky-800 font-poppins-bold text-[11px] tracking-wide">
+                                                        {dayjs(dest.date_start).format('DD MMM YYYY')} → {dayjs(dest.date_end).format('DD MMM YYYY')}
+                                                    </Text>
+                                                </View>
+                                                <Text className="text-slate-800 font-poppins-bold text-[14px] mt-0.5" numberOfLines={2}>
+                                                    {dest.location?.ville}, {dest.location?.pays}
+                                                </Text>
+                                            </View>
+
+                                            {/* Description */}
+                                            {dest.description && (
+                                                <Text className="text-slate-500 font-poppins-medium text-[13px] leading-5 mb-4">
+                                                    {dest.description}
+                                                </Text>
+                                            )}
+
+                                            {/* Associated Accommodations */}
+                                            {dest.hebergement && dest.hebergement.map((heb, hIdx) => {
+                                                const hData = heb.hebergement_data;
+                                                return (
+                                                    <View key={hIdx} className="bg-[#f0f9fa]/60 border border-teal-100/50 rounded-2xl p-3 mb-2">
+                                                        <View className="flex-row justify-between items-center mb-2">
+                                                            <View className="flex-row items-center flex-1 pr-2">
+                                                                <View className="bg-teal-500 w-5 h-5 rounded-md items-center justify-center mr-2 shadow-sm">
+                                                                    <MaterialCommunityIcons name="home-city" size={12} color="white" />
+                                                                </View>
+                                                                <Text className="text-[#0e7490] font-poppins-bold text-[13px]" numberOfLines={1}>{heb.name}</Text>
+                                                            </View>
+                                                            
+                                                            {hData ? (
+                                                                <Pressable 
+                                                                    className="bg-slate-900 px-3 py-1.5 rounded-lg active:opacity-75"
+                                                                    onPress={() => router.push(`/accommodation/${hData._id}` as any)}
+                                                                >
+                                                                    <Text className="text-white font-poppins-bold text-[10px]">View Details</Text>
+                                                                </Pressable>
+                                                            ) : (
+                                                                 <View className="bg-slate-200 px-2 py-1 rounded">
+                                                                     <Text className="text-slate-600 font-poppins-bold text-[9px] uppercase">{heb.type_hebergement}</Text>
+                                                                 </View>
+                                                            )}
+                                                        </View>
+                                                        
+                                                        {hData && (
+                                                            <View>
+                                                                {hData.name && hData.name !== heb.name && (
+                                                                    <Text className="text-slate-400 font-poppins-medium text-[11px] mb-2 px-1">Original: {hData.name}</Text>
+                                                                )}
+                                                                {hData.files && hData.files.length > 0 && (
+                                                                    <View className="flex-row gap-2 mt-1">
+                                                                        {hData.files.slice(0, 3).map((f, imgIdx) => (
+                                                                            <Image key={imgIdx} source={{ uri: f.link }} className="w-[45px] h-[45px] rounded-lg bg-teal-50 border border-teal-100/50" resizeMode="cover" />
+                                                                        ))}
+                                                                    </View>
+                                                                )}
+                                                            </View>
+                                                        )}
+                                                    </View>
+                                                )
+                                            })}
+                                        </View>
+                                    </View>
+                                ))}
                             </View>
                         </View>
                     )}
