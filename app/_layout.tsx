@@ -9,13 +9,14 @@ import {
   DefaultTheme,
   ThemeProvider,
 } from "@react-navigation/native";
-import { Stack } from "expo-router";
+import { Stack, useRouter, useSegments } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { useEffect, useState } from "react";
 import { ActivityIndicator, LogBox, Text, View } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import "react-native-reanimated";
 import "../global.css";
+import { useAuthStore } from "@/store/authStore";
 
 // Hide all LogBox warnings and errors
 LogBox.ignoreAllLogs(true);
@@ -23,14 +24,40 @@ LogBox.ignoreAllLogs(true);
 export default function RootLayout() {
   const { colorScheme } = useColorScheme();
   const [i18nInitialized, setI18nInitialized] = useState(false);
+  
+  // Connect Zustand Bootstrapping Engine
+  const { hydrate, isHydrating, isAuthenticated } = useAuthStore();
+  const segments = useSegments();
+  const router = useRouter();
 
   useEffect(() => {
+    // Starts the session token validation locally
+    hydrate();
+    
+    // Intiialize Localizations Globally
     initI18n().then(() => {
       setI18nInitialized(true);
     });
   }, []);
 
-  if (!i18nInitialized) {
+  // Protected Route Logic handled reliably outside of App rendering 
+  // It listens seamlessly anytime authentication state shifts internally 
+  useEffect(() => {
+    // Only execute navigation rules once Hydration finishes ensuring no flickers
+    if (isHydrating || !i18nInitialized) return;
+
+    const inAuthGroup = segments[0] === '(auth)';
+    
+    if (!isAuthenticated && !inAuthGroup) {
+      // Force unauthenticated users purely out of main stack screens.
+      router.replace('/(auth)/sign-in');
+    } else if (isAuthenticated && inAuthGroup) {
+      // Avoid already logged-in users landing inside signin unexpectedly.
+      router.replace('/(tabs)/home');
+    }
+  }, [isHydrating, isAuthenticated, i18nInitialized, segments]);
+
+  if (!i18nInitialized || isHydrating) {
     return (
       <View
         style={{
@@ -41,7 +68,7 @@ export default function RootLayout() {
         }}
       >
         <ActivityIndicator size="large" color="#2865D1" />
-        <Text style={{ marginTop: 16, fontSize: 16, color: "#001533" }}></Text>
+        <Text style={{ marginTop: 16, fontSize: 16, color: "#001533" }}>Verifying Secure Session...</Text>
       </View>
     );
   }
