@@ -6,10 +6,12 @@ import {
   RefreshControl,
   ScrollView,
   Text,
+  View
 } from "react-native";
 import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { useRouter } from "expo-router";
 
 import AccommodationCard from "@/components/home/AccommodationCard";
 import CountryCard from "@/components/home/CountryCard";
@@ -18,6 +20,49 @@ import HomeHero from "@/components/home/HomeHero";
 import SectionHeader from "@/components/home/SectionHeader";
 import TripCard from "@/components/home/TripCard";
 import { useHomeActivity } from "@/hooks/useHomeActivity";
+import { useAuthProfile } from "@/hooks/useAuthProfile";
+import { SafeImage } from "@/components/SafeImage";
+
+const HomeTopBar = () => {
+   const { data: profileResp, isLoading } = useAuthProfile();
+   const router = useRouter();
+   const user = profileResp?.data;
+
+   return (
+      <View className="flex-row items-center justify-between px-5 pt-3 pb-2 z-10 bg-slate-100">
+         <View className="flex-1 pr-4">
+            <Text className="text-[13px] font-poppins-semibold tracking-wide text-slate-500 uppercase">
+               Good morning 👋
+            </Text>
+            {isLoading ? (
+               <View className="h-6 w-32 bg-slate-200 rounded mt-1 animate-pulse" />
+            ) : (
+               <Text className="text-[20px] font-poppins-bold text-slate-900 mt-0.5" numberOfLines={1}>
+                  {user ? `${user.firstName} ${user.lastName}` : "Guest Traveler"}
+               </Text>
+            )}
+         </View>
+         <Pressable 
+            onPress={() => {
+                if (!user) {
+                   router.push("/(auth)/sign-in");
+                } else {
+                   // Navigate to profile or show settings
+                   router.push("/profile/edit");
+                }
+            }}
+            className="w-12 h-12 rounded-full overflow-hidden bg-blue-100 items-center justify-center border-2 border-white"
+            style={{ elevation: 2, shadowColor: '#000', shadowOpacity: 0.1, shadowRadius: 3, shadowOffset: { width: 0, height: 1 } }}
+         >
+            {user?.imageLink ? (
+               <SafeImage source={user.imageLink} className="w-full h-full" fallbackIcon="person" />
+            ) : (
+               <MaterialCommunityIcons name={user ? "account" : "login"} size={22} color="#1E3A8A" />
+            )}
+         </Pressable>
+      </View>
+   );
+};
 
 const HomeScreen = () => {
   const tabBarHeight = useBottomTabBarHeight();
@@ -65,7 +110,9 @@ const HomeScreen = () => {
   }
 
   return (
-    <SafeAreaView className="flex-1 bg-slate-100 " edges={["top", "bottom"]}>
+    <SafeAreaView className="flex-1 bg-slate-100" edges={["top", "bottom"]}>
+      <HomeTopBar />
+
       <ScrollView
         className="flex-1"
         contentContainerStyle={{ paddingBottom: tabBarHeight + 24 }}
