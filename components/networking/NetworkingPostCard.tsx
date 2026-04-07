@@ -14,6 +14,7 @@ import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 
 import { SafeImage } from "@/components/SafeImage";
+import { useLocationName } from "@/hooks/useLocationName";
 import { NetworkingPost, NetworkingMedia } from "./types";
 
 dayjs.extend(relativeTime);
@@ -369,6 +370,7 @@ const MediaGallery = ({
 
 const NetworkingPostCard = ({ post }: NetworkingPostCardProps) => {
   const { width } = useWindowDimensions();
+  const { locationName } = useLocationName(post.position);
   const hostName =
     `${post.hoster?.firstname ?? ""} ${post.hoster?.lastname ?? ""}`.trim();
   const hostUserName = post.hoster?.uniqueName
@@ -431,7 +433,7 @@ const NetworkingPostCard = ({ post }: NetworkingPostCardProps) => {
       </View>
 
       {/* Optional Location */}
-      {post.position && (
+      {locationName && (
         <View className="mb-2.5 flex-row items-center px-4">
           <MaterialCommunityIcons
             name="map-marker-radius"
@@ -442,7 +444,7 @@ const NetworkingPostCard = ({ post }: NetworkingPostCardProps) => {
             className="ml-1 text-[12px] font-poppins-semibold text-emerald-700"
             numberOfLines={1}
           >
-            {post.position.split(",")[0]}
+            {locationName}
           </Text>
         </View>
       )}
@@ -544,8 +546,7 @@ const NetworkingPostCard = ({ post }: NetworkingPostCardProps) => {
         <View className="px-4 pb-4">
           {commentsPreview.map((comment) => {
             const firstName = comment.userId?.firstName ?? "User";
-            const lastName =
-              comment.userId?.lastName ?? comment.userId?.lastname ?? "";
+            const lastName = comment.userId?.lastName ?? "";
             const userName = `${firstName} ${lastName}`.trim();
             const isReply = !!comment.replyTo;
 
