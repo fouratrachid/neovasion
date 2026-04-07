@@ -619,27 +619,7 @@ export default function NetworkingDetailScreen() {
   };
 
   return (
-    <SafeAreaView className="flex-1 bg-white" edges={["top", "bottom"]}>
-      {/* Header */}
-      <View className="absolute top-0 left-0 right-0 z-50 flex-row items-center justify-between px-4 py-3 bg-white/80 backdrop-blur-sm border-b border-slate-200">
-        <Pressable
-          onPress={handleBackPress}
-          className={`h-9 w-9 items-center justify-center rounded-full ${
-            scrollPosition > 100 ? "bg-slate-100" : "bg-white/50"
-          } active:opacity-75`}
-        >
-          <MaterialCommunityIcons name="arrow-left" size={20} color="#0F172A" />
-        </Pressable>
-
-        <Pressable className="h-9 w-9 items-center justify-center rounded-full bg-slate-100 active:opacity-75">
-          <MaterialCommunityIcons
-            name="bookmark-outline"
-            size={20}
-            color="#0F172A"
-          />
-        </Pressable>
-      </View>
-
+    <SafeAreaView className="flex-1 bg-white">
       <ScrollView
         ref={scrollViewRef}
         showsVerticalScrollIndicator={false}
@@ -649,27 +629,44 @@ export default function NetworkingDetailScreen() {
         scrollEventThrottle={16}
         className="flex-1"
       >
+        {" "}
+        {/* Header */}
+        <View className="absolute top-0 left-0 right-0 z-50 flex-row items-center justify-between px-4 py-3 bg-white/80">
+          <Pressable
+            onPress={handleBackPress}
+            className={`h-9 w-9 items-center justify-center rounded-full ${
+              scrollPosition > 100 ? "bg-slate-100" : "bg-white/50"
+            } active:opacity-75`}
+          >
+            <MaterialCommunityIcons
+              name="arrow-left"
+              size={20}
+              color="#0F172A"
+            />
+          </Pressable>
+
+          <Pressable className="h-9 w-9 items-center justify-center rounded-full bg-slate-100 active:opacity-75">
+            <MaterialCommunityIcons
+              name="bookmark-outline"
+              size={20}
+              color="#0F172A"
+            />
+          </Pressable>
+        </View>
         {/* Top Spacing for Header */}
         <View className="h-16" />
-
         {/* Media Gallery */}
         <MediaGallery media={post.media} />
-
         {/* Hoster Section */}
         <HosterSection hoster={post.hoster} post={post} />
-
         {/* Description */}
         <DescriptionSection post={post} />
-
-        {/* Engagement Stats */}
-        <EngagementStatsSection post={post} />
-
         {/* Actions Row */}
         <ActionsRow post={post} />
-
+        {/* Engagement Stats */}
+        <EngagementStatsSection post={post} />
         {/* Comments Section */}
         <CommentsSection post={post} />
-
         {/* Bottom Spacing */}
         <View className="h-4" />
       </ScrollView>
