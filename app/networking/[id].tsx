@@ -453,11 +453,20 @@ const CommentItem = memo(
         )}
 
         <View className="flex-row">
-          <View className="h-8 w-8 rounded-full bg-gradient-to-br from-blue-400 to-purple-500 items-center justify-center mr-3 flex-shrink-0">
-            <Text className="text-white text-[11px] font-poppins-bold">
-              {userName.charAt(0).toUpperCase()}
-            </Text>
-          </View>
+          {comment.userId?.imageLink ? (
+            <SafeImage
+              source={comment.userId.imageLink}
+              className="h-8 w-8 rounded-full border border-slate-200 mr-3 flex-shrink-0"
+              fallbackIcon="person"
+              fallbackIconSize={14}
+            />
+          ) : (
+            <View className="h-8 w-8 rounded-full bg-black items-center justify-center mr-3 flex-shrink-0">
+              <Text className="text-white text-[11px] font-poppins-bold">
+                {userName.charAt(0).toUpperCase()}
+              </Text>
+            </View>
+          )}
 
           <View className="flex-1">
             <View className="flex-row items-center gap-2 mb-1">
