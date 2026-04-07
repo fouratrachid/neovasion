@@ -25,13 +25,14 @@ import {
 
 type TripDetailCardProps = {
     trip: Trip;
+    routePrefix?: string;
 };
 
 const { width: SCREEN_WIDTH } = Dimensions.get("window");
 const IMAGE_WIDTH = SCREEN_WIDTH - 32;
 const IMAGE_HEIGHT = 220;
 
-export default function TripDetailCard({ trip }: TripDetailCardProps) {
+export default function TripDetailCard({ trip, routePrefix = "/trip" }: TripDetailCardProps) {
     const [activeImageIndex, setActiveImageIndex] = useState(0);
     const scrollX = useRef(new Animated.Value(0)).current;
 
@@ -62,7 +63,7 @@ export default function TripDetailCard({ trip }: TripDetailCardProps) {
                 shadowRadius: 16,
                 elevation: 5,
             }}
-            onPress={() => router.push(`/trip/${trip._id}` as any)}
+            onPress={() => router.push(`${routePrefix}/${trip._id}` as any)}
         >
             {/* Image Carousel */}
             {images.length > 0 && (
@@ -425,8 +426,7 @@ export default function TripDetailCard({ trip }: TripDetailCardProps) {
                                 elevation: 3,
                             }}
                             onPress={() => {
-                                // navigate to trip details
-                                router.push(`/trip/${trip._id}` as any);
+                                router.push(`${routePrefix}/${trip._id}` as any);
                             }}
                         >
                             <Text className="text-white text-[12px] font-poppins-bold">

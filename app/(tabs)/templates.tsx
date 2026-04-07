@@ -84,7 +84,7 @@ export default function TemplatesScreen() {
             <FlatList
                 data={trips}
                 keyExtractor={(item) => item._id}
-                renderItem={({ item }) => <TripDetailCard trip={item} />}
+                renderItem={({ item }) => <TripDetailCard trip={item} routePrefix="/template" />}
                 contentContainerStyle={{
                     paddingTop: 16,
                     paddingBottom: tabBarHeight + 24,

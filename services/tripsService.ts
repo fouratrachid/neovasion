@@ -1,4 +1,4 @@
-import { TripsActivityResponse, TripDetailsResponse, Trip } from "@/components/trips/types";
+import { TripsActivityResponse, TripDetailsResponse, Trip, DetailedTrip } from "@/components/trips/types";
 import { apiService } from "./api";
 
 const DEFAULT_COUNTRY = "TN";
@@ -55,6 +55,23 @@ class TripsService {
             return response;
         } catch (error) {
             console.error(`❌ TripsService: Failed to fetch trip details ${tripId}:`, error);
+            throw error;
+        }
+    }
+
+    async fetchTemplateDetails(templateId: string): Promise<DetailedTrip> {
+        try {
+            console.log(`✈️ TripsService: Fetching template details for ${templateId}...`);
+            const response = await apiService.request<DetailedTrip>(
+                `draft-trips/template/${templateId}`,
+                {
+                    method: "GET",
+                },
+            );
+            console.log("✅ TripsService: Template details fetched successfully");
+            return response;
+        } catch (error) {
+            console.error(`❌ TripsService: Failed to fetch template details ${templateId}:`, error);
             throw error;
         }
     }
