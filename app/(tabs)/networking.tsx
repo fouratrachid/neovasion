@@ -9,14 +9,26 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
+import { useRouter } from "expo-router";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import NetworkingPostCard from "@/components/networking/NetworkingPostCard";
 import { useNetworkingActivity } from "@/hooks/useNetworkingActivity";
 
 export default function NetworkingScreen() {
   const tabBarHeight = useBottomTabBarHeight();
+  const router = useRouter();
   const { data, posts, isLoading, isRefreshing, error, onRefresh, refetch } =
     useNetworkingActivity();
+
+  const handlePostPress = (postId: string, post: any) => {
+    router.push({
+      pathname: "/networking/[id]",
+      params: {
+        id: postId,
+        post: JSON.stringify(post),
+      },
+    });
+  };
 
   if (isLoading) {
     return (
@@ -67,7 +79,11 @@ export default function NetworkingScreen() {
       <FlatList
         data={posts}
         keyExtractor={(item) => item._id}
-        renderItem={({ item }) => <NetworkingPostCard post={item} />}
+        renderItem={({ item }) => (
+          <Pressable onPress={() => handlePostPress(item._id, item)}>
+            <NetworkingPostCard post={item} />
+          </Pressable>
+        )}
         contentContainerStyle={{
           paddingHorizontal: 16,
           paddingBottom: tabBarHeight + 24,
