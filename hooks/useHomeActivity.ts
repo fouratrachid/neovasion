@@ -1,14 +1,16 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import { useMemo } from 'react';
 import { homeService } from '@/services/homeService';
 import { HomeActivityResponse } from '@/components/home/types';
+import { queryKeys } from '@/hooks/queryKeys';
 
 export interface UseHomeActivityReturn {
     data: HomeActivityResponse | null;
     isLoading: boolean;
     isRefreshing: boolean;
     error: string | null;
-    fetchHomeActivity: () => Promise<void>;
-    onRefresh: () => Promise<void>;
+    refetch: () => void;
+    onRefresh: () => void;
     stats: {
         trips: number;
         stays: number;
@@ -18,41 +20,26 @@ export interface UseHomeActivityReturn {
 }
 
 export const useHomeActivity = (): UseHomeActivityReturn => {
-    const [data, setData] = useState<HomeActivityResponse | null>(null);
-    const [isLoading, setIsLoading] = useState(true);
-    const [isRefreshing, setIsRefreshing] = useState(false);
-    const [error, setError] = useState<string | null>(null);
-
-    const fetchHomeActivity = useCallback(async () => {
-        try {
-            setError(null);
+    // TanStack Query handles loading, error, refetching automatically
+    const {
+        data,
+        isLoading,
+        error,
+        refetch,
+        isFetching,
+    } = useQuery({
+        queryKey: queryKeys.home.activity(),
+        queryFn: async () => {
             console.log('🎣 useHomeActivity: Fetching data...');
             const response = await homeService.fetchHomeActivity();
-            setData(response);
             console.log('✅ useHomeActivity: Data fetched successfully');
-        } catch (err) {
-            const message =
-                err instanceof Error ? err.message : 'Failed to load travel content';
-            console.error('❌ useHomeActivity: Error fetching data:', message);
-            setError(message);
-        }
-    }, []);
-
-    useEffect(() => {
-        const load = async () => {
-            setIsLoading(true);
-            await fetchHomeActivity();
-            setIsLoading(false);
-        };
-
-        void load();
-    }, [fetchHomeActivity]);
-
-    const onRefresh = useCallback(async () => {
-        setIsRefreshing(true);
-        await fetchHomeActivity();
-        setIsRefreshing(false);
-    }, [fetchHomeActivity]);
+            return response;
+        },
+        staleTime: 5 * 60 * 1000, // 5 minutes
+        gcTime: 10 * 60 * 1000, // 10 minutes (formerly cacheTime)
+        retry: 2, // Retry failed requests 2 times
+        refetchOnWindowFocus: false, // Don't refetch when window regains focus
+    });
 
     const stats = useMemo(
         () => ({
@@ -65,12 +52,12 @@ export const useHomeActivity = (): UseHomeActivityReturn => {
     );
 
     return {
-        data,
+        data: data ?? null,
         isLoading,
-        isRefreshing,
-        error,
-        fetchHomeActivity,
-        onRefresh,
+        isRefreshing: isFetching, // isFetching is true when ANY request is in flight
+        error: error?.message ?? null,
+        refetch, // Direct refetch from useQuery
+        onRefresh: refetch, // Wrapper for pull-to-refresh
         stats,
     };
 };

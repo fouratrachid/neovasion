@@ -6,7 +6,7 @@ import {
   RefreshControl,
   ScrollView,
   Text,
-  View
+  View,
 } from "react-native";
 import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -24,57 +24,67 @@ import { useAuthProfile } from "@/hooks/useAuthProfile";
 import { SafeImage } from "@/components/SafeImage";
 
 const HomeTopBar = () => {
-   const { data: profileResp, isLoading } = useAuthProfile();
-   const router = useRouter();
-   const user = profileResp?.data;
+  const { data: profileResp, isLoading } = useAuthProfile();
+  const router = useRouter();
+  const user = profileResp?.data;
 
-   return (
-      <View className="flex-row items-center justify-between px-5 pt-3 pb-2 z-10 bg-slate-100">
-         <View className="flex-1 pr-4">
-            <Text className="text-[13px] font-poppins-semibold tracking-wide text-slate-500 uppercase">
-               Good morning 👋
-            </Text>
-            {isLoading ? (
-               <View className="h-6 w-32 bg-slate-200 rounded mt-1 animate-pulse" />
-            ) : (
-               <Text className="text-[20px] font-poppins-bold text-slate-900 mt-0.5" numberOfLines={1}>
-                  {user ? `${user.firstName} ${user.lastName}` : "Guest Traveler"}
-               </Text>
-            )}
-         </View>
-         <Pressable 
-            onPress={() => {
-                if (!user) {
-                   router.push("/(auth)/sign-in");
-                } else {
-                   // Navigate to profile or show settings
-                   router.push("/profile/edit");
-                }
-            }}
-            className="w-12 h-12 rounded-full overflow-hidden bg-blue-100 items-center justify-center border-2 border-white"
-            style={{ elevation: 2, shadowColor: '#000', shadowOpacity: 0.1, shadowRadius: 3, shadowOffset: { width: 0, height: 1 } }}
-         >
-            {user?.imageLink ? (
-               <SafeImage source={user.imageLink} className="w-full h-full" fallbackIcon="person" />
-            ) : (
-               <MaterialCommunityIcons name={user ? "account" : "login"} size={22} color="#1E3A8A" />
-            )}
-         </Pressable>
+  return (
+    <View className="flex-row items-center justify-between px-5 pt-3 pb-2 z-10 bg-slate-100">
+      <View className="flex-1 pr-4">
+        <Text className="text-[13px] font-poppins-semibold tracking-wide text-slate-500 uppercase">
+          Good morning 👋
+        </Text>
+        {isLoading ? (
+          <View className="h-6 w-32 bg-slate-200 rounded mt-1 animate-pulse" />
+        ) : (
+          <Text
+            className="text-[20px] font-poppins-bold text-slate-900 mt-0.5"
+            numberOfLines={1}
+          >
+            {user ? `${user.firstName} ${user.lastName}` : "Guest Traveler"}
+          </Text>
+        )}
       </View>
-   );
+      <Pressable
+        onPress={() => {
+          if (!user) {
+            router.push("/(auth)/sign-in");
+          } else {
+            // Navigate to profile or show settings
+            router.push("/profile/edit");
+          }
+        }}
+        className="w-12 h-12 rounded-full overflow-hidden bg-blue-100 items-center justify-center border-2 border-white"
+        style={{
+          elevation: 2,
+          shadowColor: "#000",
+          shadowOpacity: 0.1,
+          shadowRadius: 3,
+          shadowOffset: { width: 0, height: 1 },
+        }}
+      >
+        {user?.imageLink ? (
+          <SafeImage
+            source={user.imageLink}
+            className="w-full h-full"
+            fallbackIcon="person"
+          />
+        ) : (
+          <MaterialCommunityIcons
+            name={user ? "account" : "login"}
+            size={22}
+            color="#1E3A8A"
+          />
+        )}
+      </Pressable>
+    </View>
+  );
 };
 
 const HomeScreen = () => {
   const tabBarHeight = useBottomTabBarHeight();
-  const {
-    data,
-    isLoading,
-    isRefreshing,
-    error,
-    fetchHomeActivity,
-    onRefresh,
-    stats,
-  } = useHomeActivity();
+  const { data, isLoading, isRefreshing, error, refetch, onRefresh, stats } =
+    useHomeActivity();
 
   if (isLoading) {
     return (
@@ -101,7 +111,7 @@ const HomeScreen = () => {
         <Text className="mt-2 text-red-600 text-center">{error}</Text>
         <Pressable
           className="mt-5 rounded-full bg-red-600 px-5 py-3 active:opacity-80"
-          onPress={() => void fetchHomeActivity()}
+          onPress={() => refetch()}
         >
           <Text className="text-white font-poppins-bold">Try Again</Text>
         </Pressable>
