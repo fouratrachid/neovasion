@@ -23,6 +23,26 @@ class NetworkingService {
             throw error;
         }
     }
+
+    async fetchConnectedNetworking(country: string = DEFAULT_COUNTRY): Promise<NetworkingActivityResponse> {
+        try {
+            const response = await apiService.request<NetworkingActivityResponse>(
+                "preferences/search-activity/Networking/connected",
+                {
+                    method: "POST",
+                    body: JSON.stringify({ country }),
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                },
+            );
+
+            return response;
+        } catch (error) {
+            console.error("Failed to fetch connected networking posts:", error);
+            throw error;
+        }
+    }
 }
 
 export const networkingService = new NetworkingService();

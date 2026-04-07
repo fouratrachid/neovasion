@@ -3,6 +3,7 @@ import { useMemo } from "react";
 import { NetworkingActivityResponse } from "@/components/networking/types";
 import { networkingService } from "@/services/networkingService";
 import { queryKeys } from "@/hooks/queryKeys";
+import { useAuthStore } from "@/store/authStore";
 
 export interface UseNetworkingActivityReturn {
     data: NetworkingActivityResponse | null;
@@ -12,9 +13,12 @@ export interface UseNetworkingActivityReturn {
     error: string | null;
     onRefresh: () => void;
     refetch: () => void;
+    isAuthenticated: boolean;
 }
 
 export const useNetworkingActivity = (): UseNetworkingActivityReturn => {
+    const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
+
     // TanStack Query handles loading, error, refetching automatically
     const {
         data,
@@ -25,9 +29,15 @@ export const useNetworkingActivity = (): UseNetworkingActivityReturn => {
     } = useQuery({
         queryKey: queryKeys.networking.activity(),
         queryFn: async () => {
-            console.log("🌐 useNetworkingActivity: Fetching networking activity...");
-            const response = await networkingService.fetchPublicNetworking();
-            console.log("✅ useNetworkingActivity: Networking activity fetched successfully");
+            console.log(
+                `🌐 useNetworkingActivity: Fetching ${isAuthenticated ? "connected" : "public"} networking activity...`
+            );
+            const response = isAuthenticated
+                ? await networkingService.fetchConnectedNetworking()
+                : await networkingService.fetchPublicNetworking();
+            console.log(
+                `✅ useNetworkingActivity: ${isAuthenticated ? "Connected" : "Public"} networking activity fetched successfully`
+            );
             return response;
         },
         staleTime: 5 * 60 * 1000, // 5 minutes
@@ -46,5 +56,6 @@ export const useNetworkingActivity = (): UseNetworkingActivityReturn => {
         error: error?.message ?? null,
         onRefresh: refetch, // Direct refetch from useQuery
         refetch,
+        isAuthenticated,
     };
 };
