@@ -158,6 +158,21 @@ export default function TabsLayout() {
       />
 
       <Tabs.Screen
+        name="templates"
+        options={{
+          title: "Templates",
+          tabBarIcon: ({ color, focused, size }) => (
+            <CustomTabBarIcon
+              focused={focused}
+              color={color}
+              size={size}
+              iconName={focused ? "albums" : "albums-outline"}
+            />
+          ),
+        }}
+      />
+
+      <Tabs.Screen
         name="trips"
         options={{
           title: "Trips",
