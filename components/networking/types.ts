@@ -20,7 +20,6 @@ export interface NetworkingHoster {
 
 export interface NetworkingCommentUser {
     firstName?: string;
-    lastname?: string;
     lastName?: string;
     email?: string;
     imageLink?: string;
