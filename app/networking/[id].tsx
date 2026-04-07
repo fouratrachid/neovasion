@@ -20,6 +20,7 @@ import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 
 import { SafeImage } from "@/components/SafeImage";
+import { useLocationName } from "@/hooks/useLocationName";
 import {
   NetworkingPost,
   NetworkingMedia,
@@ -170,6 +171,7 @@ const HosterSection = memo(
       ? `@${hoster.uniqueName}`
       : "@traveler";
     const timeAgo = post.datePost ? dayjs(post.datePost).fromNow() : "Recently";
+    const { locationName, isLoading } = useLocationName(post.position);
 
     return (
       <View className="px-4 py-4 bg-white border-b border-slate-100">
@@ -202,7 +204,7 @@ const HosterSection = memo(
         </View>
 
         {/* Location Badge */}
-        {post.position && (
+        {locationName && (
           <View className="mt-3 flex-row items-center bg-emerald-50 rounded-lg px-3 py-2.5">
             <MaterialCommunityIcons
               name="map-marker-radius"
@@ -210,7 +212,7 @@ const HosterSection = memo(
               color="#059669"
             />
             <Text className="ml-2 text-[13px] font-poppins-semibold text-emerald-700 flex-1">
-              {post.position}
+              {isLoading ? "Loading location..." : locationName}
             </Text>
             <MaterialCommunityIcons
               name="navigation"
