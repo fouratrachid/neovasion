@@ -1,6 +1,8 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { useMemo, useState } from "react";
 import { AccommodationsResponse, Accommodation, AccommodationFilterType } from "@/components/accommodations/types";
 import { accommodationsService } from "@/services/accommodationsService";
+import { queryKeys } from "@/hooks/queryKeys";
 
 export interface UseAccommodationsReturn {
     data: AccommodationsResponse | null;
@@ -14,43 +16,34 @@ export interface UseAccommodationsReturn {
     activeFilter: string;
     setActiveFilter: (filter: string) => void;
     availableTypes: string[];
-    onRefresh: () => Promise<void>;
-    refetch: () => Promise<void>;
+    onRefresh: () => void;
+    refetch: () => void;
 }
 
 export const useAccommodations = (): UseAccommodationsReturn => {
-    const [data, setData] = useState<AccommodationsResponse | null>(null);
-    const [isLoading, setIsLoading] = useState(true);
-    const [isRefreshing, setIsRefreshing] = useState(false);
-    const [error, setError] = useState<string | null>(null);
     const [searchQuery, setSearchQuery] = useState("");
     const [activeFilter, setActiveFilter] = useState("all");
 
-    const refetch = useCallback(async () => {
-        try {
-            setError(null);
+    // TanStack Query handles loading, error, refetching automatically
+    const {
+        data,
+        isLoading,
+        error,
+        refetch,
+        isFetching,
+    } = useQuery({
+        queryKey: queryKeys.accommodations.list(),
+        queryFn: async () => {
+            console.log("🏨 useAccommodations: Fetching accommodations...");
             const response = await accommodationsService.fetchAccommodations();
-            setData(response);
-        } catch (err) {
-            const message = err instanceof Error ? err.message : "Failed to load accommodations";
-            setError(message);
-        }
-    }, []);
-
-    useEffect(() => {
-        const load = async () => {
-            setIsLoading(true);
-            await refetch();
-            setIsLoading(false);
-        };
-        void load();
-    }, [refetch]);
-
-    const onRefresh = useCallback(async () => {
-        setIsRefreshing(true);
-        await refetch();
-        setIsRefreshing(false);
-    }, [refetch]);
+            console.log("✅ useAccommodations: Accommodations fetched successfully");
+            return response;
+        },
+        staleTime: 5 * 60 * 1000, // 5 minutes
+        gcTime: 10 * 60 * 1000, // 10 minutes (formerly cacheTime)
+        retry: 2, // Retry failed requests 2 times
+        refetchOnWindowFocus: false,
+    });
 
     const accommodations = useMemo(() => data?.accomodations ?? [], [data]);
 
@@ -68,8 +61,8 @@ export const useAccommodations = (): UseAccommodationsReturn => {
 
         if (searchQuery.trim()) {
             const q = searchQuery.toLowerCase();
-            result = result.filter(a => 
-                a.name.toLowerCase().includes(q) || 
+            result = result.filter(a =>
+                a.name.toLowerCase().includes(q) ||
                 a.type.toLowerCase().includes(q)
             );
         }
@@ -78,18 +71,18 @@ export const useAccommodations = (): UseAccommodationsReturn => {
     }, [accommodations, activeFilter, searchQuery]);
 
     return {
-        data,
+        data: data ?? null,
         accommodations,
         filteredAccommodations,
         isLoading,
-        isRefreshing,
-        error,
+        isRefreshing: isFetching, // isFetching is true when ANY request is in flight
+        error: error?.message ?? null,
         searchQuery,
         setSearchQuery,
         activeFilter,
         setActiveFilter,
         availableTypes,
-        onRefresh,
+        onRefresh: refetch, // Direct refetch from useQuery
         refetch,
     };
 };
