@@ -25,9 +25,7 @@ export const useAuthStore = create<AuthState>((set) => ({
   login: async (email, password) => {
     set({ isLoginLoading: true });
     try {
-      // Execute the request via our authService
       await authService.login(email, password);
-      // Retrieve the freshly minted authenticated profile
       const userResp = await authService.getMe();
       
       set({ 
@@ -54,7 +52,6 @@ export const useAuthStore = create<AuthState>((set) => ({
     try {
       const token = await apiService.getToken();
       if (token) {
-        // We have a stored token, let's verify and get User Profile
         const userResp = await authService.getMe();
         set({ 
           user: userResp.data, 

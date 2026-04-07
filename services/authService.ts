@@ -37,7 +37,7 @@ class AuthService {
     
     return response;
   }
-
+  
   async getMe(): Promise<UserProfileResponse> {
     return apiService.request<UserProfileResponse>('users/me', { 
       method: 'GET' 

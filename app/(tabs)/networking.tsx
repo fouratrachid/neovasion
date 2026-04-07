@@ -10,7 +10,6 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-
 import NetworkingPostCard from "@/components/networking/NetworkingPostCard";
 import { useNetworkingActivity } from "@/hooks/useNetworkingActivity";
 
