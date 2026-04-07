@@ -23,6 +23,7 @@ export interface NetworkingCommentUser {
     lastname?: string;
     lastName?: string;
     email?: string;
+    imageLink?: string;
 }
 
 export interface NetworkingComment {
