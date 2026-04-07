@@ -30,79 +30,6 @@ dayjs.extend(relativeTime);
 
 const { width: SCREEN_WIDTH } = Dimensions.get("window");
 
-// Mock data - In real implementation, fetch from API
-const MOCK_POST: NetworkingPost = {
-  _id: "698d9dffaa5434657aa9dabf",
-  nbComment: 4,
-  media: [
-    {
-      index: 1,
-      link: "https://dev-api.neovasion.com/uploads/1770888703924-146320797.jpg",
-      type: "Image",
-    },
-    {
-      index: 2,
-      link: "https://dev-api.neovasion.com/uploads/1770888703927-356918483.jpg",
-      type: "Image",
-    },
-  ],
-  format: "carousel",
-  programed: false,
-  datePost: "2026-02-12T09:31:43.904Z",
-  reaction: "😎",
-  position: "10.8861888,33.7735976",
-  description:
-    "<p><u><strong><em>Hello from Djerba</em></strong></u><br>#djerba #Trip</p>",
-  Htags: ["#djerba", "#Trip"],
-  createdAt: "2026-02-12T09:31:43.970Z",
-  updatedAt: "2026-04-03T09:06:47.031Z",
-  __v: 15,
-  nbLikes: 1,
-  comments: [
-    {
-      userId: {
-        firstName: "mohsen",
-        lastName: "Simon",
-      },
-      message: "Nice",
-      replyTo: null,
-      _id: "69b2bc52596ef17ef25ed96d",
-      dateTime: "2026-03-12T13:14:58.711Z",
-    },
-    {
-      userId: {
-        firstName: "oussama",
-        lastName: "benhaj",
-      },
-      message: "Thanks for sharing!",
-      replyTo: null,
-      _id: "69b2bdb34330ae3cdd177126",
-      dateTime: "2026-03-12T13:20:51.592Z",
-    },
-    {
-      userId: {
-        firstName: "sara",
-        lastName: "travel",
-      },
-      message: "Djerba is amazing!",
-      replyTo: null,
-      _id: "69cf83180708be6713940817",
-      dateTime: "2026-04-03T09:06:32.803Z",
-    },
-  ],
-  location: {
-    lon: 10.8861888,
-    lat: 33.7735976,
-  },
-  hoster: {
-    firstname: "oussama",
-    lastname: "benhaj",
-    imageProfile:
-      "https://lh3.googleusercontent.com/a/ACg8ocI_0Ql25SXED5CqOyR5Gh2C7AdV4ERFn4LhF5c5CJaDx9XcMx2p=s96-c",
-    uniqueName: "OussamaBenHaj",
-  },
-};
-
 type NetworkingDetailScreenProps = {};
 
 // --- Dynamic Media Gallery Component ---
@@ -612,7 +539,7 @@ export default function NetworkingDetailScreen() {
   const [scrollPosition, setScrollPosition] = useState(0);
 
   // Parse post from route params or use mock data if not available
-  const post: NetworkingPost = postParam ? JSON.parse(postParam) : MOCK_POST;
+  const post: NetworkingPost = postParam ? JSON.parse(postParam) : null;
 
   const handleBackPress = () => {
     router.back();
@@ -629,7 +556,6 @@ export default function NetworkingDetailScreen() {
         scrollEventThrottle={16}
         className="flex-1"
       >
-        {" "}
         {/* Header */}
         <View className="absolute top-0 left-0 right-0 z-50 flex-row items-center justify-between px-4 py-3 bg-white/80">
           <Pressable
