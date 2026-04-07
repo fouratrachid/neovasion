@@ -480,7 +480,7 @@ const CommentItem = memo(
             <Text className="text-[13px] font-poppins-medium text-slate-700 leading-5">
               {comment.message}
             </Text>
-            <Pressable className="mt-2 flex-row items-center gap-1">
+            {/* <Pressable className="mt-2 flex-row items-center gap-1">
               <MaterialCommunityIcons
                 name="heart-outline"
                 size={14}
@@ -489,7 +489,7 @@ const CommentItem = memo(
               <Text className="text-[11px] font-poppins-medium text-slate-500">
                 Like
               </Text>
-            </Pressable>
+            </Pressable> */}
           </View>
         </View>
       </View>
