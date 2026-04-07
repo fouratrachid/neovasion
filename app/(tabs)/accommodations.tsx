@@ -69,13 +69,13 @@ export default function AccommodationsScreen() {
         </Text>
         <Pressable
           className="mt-5 flex-row items-center rounded-full bg-emerald-600 px-6 py-3 active:opacity-80"
-          style={{
-            shadowColor: "#059669",
-            shadowOffset: { width: 0, height: 3 },
-            shadowOpacity: 0.3,
-            shadowRadius: 6,
-            elevation: 4,
-          }}
+          // style={{
+          //   shadowColor: "#059669",
+          //   shadowOffset: { width: 0, height: 3 },
+          //   shadowOpacity: 0.3,
+          //   shadowRadius: 6,
+          //   elevation: 4,
+          // }}
           onPress={() => refetch()}
         >
           <MaterialCommunityIcons name="refresh" size={18} color="#FFFFFF" />
