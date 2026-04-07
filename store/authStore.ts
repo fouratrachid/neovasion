@@ -1,6 +1,8 @@
 import { create } from 'zustand';
 import { authService, UserProfileResponse } from '@/services/authService';
 import { apiService } from '@/services/api';
+import { queryClient } from '@/providers/QueryProvider';
+import { queryKeys } from '@/hooks/queryKeys';
 
 type UserData = UserProfileResponse['data'];
 
@@ -27,17 +29,20 @@ export const useAuthStore = create<AuthState>((set) => ({
     try {
       await authService.login(email, password);
       const userResp = await authService.getMe();
-      
-      set({ 
-        user: userResp.data, 
-        isAuthenticated: true, 
-        isLoginLoading: false 
+
+      set({
+        user: userResp.data,
+        isAuthenticated: true,
+        isLoginLoading: false
       });
+
+      // Invalidate profile query cache to trigger refetch in useAuthProfile
+      queryClient.invalidateQueries({ queryKey: queryKeys.auth.me() });
     } catch (error) {
-      set({ 
-        isLoginLoading: false, 
-        isAuthenticated: false, 
-        user: null 
+      set({
+        isLoginLoading: false,
+        isAuthenticated: false,
+        user: null
       });
       throw error;
     }
@@ -46,6 +51,9 @@ export const useAuthStore = create<AuthState>((set) => ({
   logout: async () => {
     await authService.logout();
     set({ user: null, isAuthenticated: false, isHydrating: false });
+
+    // Clear all auth-related caches
+    queryClient.removeQueries({ queryKey: queryKeys.auth.all });
   },
 
   hydrate: async () => {
@@ -53,11 +61,14 @@ export const useAuthStore = create<AuthState>((set) => ({
       const token = await apiService.getToken();
       if (token) {
         const userResp = await authService.getMe();
-        set({ 
-          user: userResp.data, 
-          isAuthenticated: true, 
-          isHydrating: false 
+        set({
+          user: userResp.data,
+          isAuthenticated: true,
+          isHydrating: false
         });
+
+        // Pre-populate cache so useAuthProfile doesn't refetch
+        queryClient.setQueryData(queryKeys.auth.me(), userResp);
       } else {
         // No token found locally
         set({ isAuthenticated: false, isHydrating: false });
