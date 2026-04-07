@@ -1,4 +1,4 @@
-import React, { useRef, useState, useCallback } from "react";
+import React, { useRef, useState, useCallback, useMemo, memo } from "react";
 import {
   View,
   Text,
@@ -33,7 +33,7 @@ const { width: SCREEN_WIDTH } = Dimensions.get("window");
 type NetworkingDetailScreenProps = {};
 
 // --- Dynamic Media Gallery Component ---
-const MediaGallery = ({ media }: { media: NetworkingMedia[] }) => {
+const MediaGallery = memo(({ media }: { media: NetworkingMedia[] }) => {
   const [activeIndex, setActiveIndex] = useState(0);
   const [videoLoading, setVideoLoading] = useState<Record<number, boolean>>({});
   const videoRefs = useRef<Record<number, Video | null>>({});
@@ -152,77 +152,101 @@ const MediaGallery = ({ media }: { media: NetworkingMedia[] }) => {
       )}
     </View>
   );
-};
+});
+MediaGallery.displayName = "MediaGallery";
 
 // --- Hoster Profile Section ---
-const HosterSection = ({
-  hoster,
-  post,
-}: {
-  hoster: typeof MOCK_POST.hoster;
-  post: NetworkingPost;
-}) => {
-  const hostName = `${hoster.firstname ?? ""} ${hoster.lastname ?? ""}`.trim();
-  const hostUserName = hoster.uniqueName
-    ? `@${hoster.uniqueName}`
-    : "@traveler";
-  const timeAgo = post.datePost ? dayjs(post.datePost).fromNow() : "Recently";
+const HosterSection = memo(
+  ({
+    hoster,
+    post,
+  }: {
+    hoster: NetworkingPost["hoster"];
+    post: NetworkingPost;
+  }) => {
+    const hostName =
+      `${hoster.firstname ?? ""} ${hoster.lastname ?? ""}`.trim();
+    const hostUserName = hoster.uniqueName
+      ? `@${hoster.uniqueName}`
+      : "@traveler";
+    const timeAgo = post.datePost ? dayjs(post.datePost).fromNow() : "Recently";
 
-  return (
-    <View className="px-4 py-4 bg-white border-b border-slate-100">
-      <View className="flex-row items-center justify-between">
-        <View className="flex-1 flex-row items-center">
-          <SafeImage
-            source={hoster.imageProfile ?? ""}
-            className="h-14 w-14 rounded-full border border-slate-100"
-            fallbackIcon="person"
-            fallbackIconSize={24}
-          />
-          <View className="ml-3 flex-1">
-            <View className="flex-row items-center">
-              <Text className="text-[16px] font-poppins-bold text-slate-900">
-                {hostName || "Traveler"}
+    return (
+      <View className="px-4 py-4 bg-white border-b border-slate-100">
+        <View className="flex-row items-center justify-between">
+          <View className="flex-1 flex-row items-center">
+            <SafeImage
+              source={hoster.imageProfile ?? ""}
+              className="h-14 w-14 rounded-full border border-slate-100"
+              fallbackIcon="person"
+              fallbackIconSize={24}
+            />
+            <View className="ml-3 flex-1">
+              <View className="flex-row items-center">
+                <Text className="text-[16px] font-poppins-bold text-slate-900">
+                  {hostName || "Traveler"}
+                </Text>
+              </View>
+              <Text className="text-[13px] font-poppins-medium text-slate-500">
+                {hostUserName} • {timeAgo}
               </Text>
             </View>
-            <Text className="text-[13px] font-poppins-medium text-slate-500">
-              {hostUserName} • {timeAgo}
-            </Text>
           </View>
+          <Pressable className="h-9 w-9 items-center justify-center rounded-full bg-slate-100">
+            <MaterialCommunityIcons
+              name="dots-vertical"
+              size={18}
+              color="#64748B"
+            />
+          </Pressable>
         </View>
-        <Pressable className="h-9 w-9 items-center justify-center rounded-full bg-slate-100">
-          <MaterialCommunityIcons
-            name="dots-vertical"
-            size={18}
-            color="#64748B"
-          />
-        </Pressable>
-      </View>
 
-      {/* Location Badge */}
-      {post.position && (
-        <View className="mt-3 flex-row items-center bg-emerald-50 rounded-lg px-3 py-2.5">
-          <MaterialCommunityIcons
-            name="map-marker-radius"
-            size={16}
-            color="#059669"
-          />
-          <Text className="ml-2 text-[13px] font-poppins-semibold text-emerald-700 flex-1">
-            {post.position}
-          </Text>
-          <MaterialCommunityIcons name="navigation" size={14} color="#059669" />
-        </View>
-      )}
-    </View>
-  );
-};
+        {/* Location Badge */}
+        {post.position && (
+          <View className="mt-3 flex-row items-center bg-emerald-50 rounded-lg px-3 py-2.5">
+            <MaterialCommunityIcons
+              name="map-marker-radius"
+              size={16}
+              color="#059669"
+            />
+            <Text className="ml-2 text-[13px] font-poppins-semibold text-emerald-700 flex-1">
+              {post.position}
+            </Text>
+            <MaterialCommunityIcons
+              name="navigation"
+              size={14}
+              color="#059669"
+            />
+          </View>
+        )}
+      </View>
+    );
+  },
+);
+HosterSection.displayName = "HosterSection";
 
 // --- Description Section ---
-const DescriptionSection = ({ post }: { post: NetworkingPost }) => {
+const DescriptionSection = memo(({ post }: { post: NetworkingPost }) => {
   const { width } = useWindowDimensions();
 
-  const htmlContent = post.description
-    ? `<div style="font-family: 'Poppins'; color: #0F172A; font-size: 15px; line-height: 1.6;">${post.description}</div>`
-    : "";
+  const htmlContent = useMemo(
+    () =>
+      post.description
+        ? `<div style="font-family: 'Poppins'; color: #0F172A; font-size: 15px; line-height: 1.6;">${post.description}</div>`
+        : "",
+    [post.description],
+  );
+
+  const tagsStyles = useMemo(
+    () => ({
+      p: { marginVertical: 0 },
+      br: { marginVertical: 4 },
+      strong: { fontWeight: "bold" },
+      em: { fontStyle: "italic" },
+      u: { textDecorationLine: "underline" },
+    }),
+    [],
+  );
 
   return (
     <View className="px-4 py-4 bg-white border-b border-slate-100">
@@ -243,13 +267,7 @@ const DescriptionSection = ({ post }: { post: NetworkingPost }) => {
             contentWidth={width - 32}
             source={{ html: htmlContent }}
             baseStyle={{ color: "#0F172A" }}
-            tagsStyles={{
-              p: { marginVertical: 0 },
-              br: { marginVertical: 4 },
-              strong: { fontWeight: "bold" },
-              em: { fontStyle: "italic" },
-              u: { textDecorationLine: "underline" },
-            }}
+            tagsStyles={tagsStyles}
           />
         </View>
       )}
@@ -271,10 +289,11 @@ const DescriptionSection = ({ post }: { post: NetworkingPost }) => {
       )}
     </View>
   );
-};
+});
+DescriptionSection.displayName = "DescriptionSection";
 
 // --- Engagement Stats Section ---
-const EngagementStatsSection = ({ post }: { post: NetworkingPost }) => {
+const EngagementStatsSection = memo(({ post }: { post: NetworkingPost }) => {
   return (
     <View className="px-4 py-3 bg-slate-50 flex-row justify-around">
       <View className="items-center">
@@ -316,10 +335,11 @@ const EngagementStatsSection = ({ post }: { post: NetworkingPost }) => {
       </View>
     </View>
   );
-};
+});
+EngagementStatsSection.displayName = "EngagementStatsSection";
 
 // --- Actions Row ---
-const ActionsRow = ({ post }: { post: NetworkingPost }) => {
+const ActionsRow = memo(({ post }: { post: NetworkingPost }) => {
   const [isLiked, setIsLiked] = useState(post.is_like ?? false);
   const [likeCount, setLikeCount] = useState(post.nbLikes ?? 0);
 
@@ -385,87 +405,91 @@ const ActionsRow = ({ post }: { post: NetworkingPost }) => {
       </Pressable>
     </View>
   );
-};
+});
+ActionsRow.displayName = "ActionsRow";
 
 // --- Comments Section ---
-const CommentItem = ({
-  comment,
-  allComments,
-}: {
-  comment: NetworkingComment;
-  allComments: NetworkingComment[];
-}) => {
-  const userName = `${comment.userId?.firstName ?? ""} ${
-    comment.userId?.lastName ?? ""
-  }`.trim();
-  const timeAgo = comment.dateTime
-    ? dayjs(comment.dateTime).fromNow()
-    : "Recently";
+const CommentItem = memo(
+  ({
+    comment,
+    allComments,
+  }: {
+    comment: NetworkingComment;
+    allComments: NetworkingComment[];
+  }) => {
+    const userName = `${comment.userId?.firstName ?? ""} ${
+      comment.userId?.lastName ?? ""
+    }`.trim();
+    const timeAgo = comment.dateTime
+      ? dayjs(comment.dateTime).fromNow()
+      : "Recently";
 
-  // Find parent comment if this is a reply
-  const parentComment = comment.replyTo
-    ? allComments.find((c) => c._id === comment.replyTo)
-    : null;
-  const parentUserName = parentComment
-    ? `${parentComment.userId?.firstName ?? ""} ${
-        parentComment.userId?.lastName ?? ""
-      }`.trim()
-    : null;
+    // Find parent comment if this is a reply
+    const parentComment = comment.replyTo
+      ? allComments.find((c) => c._id === comment.replyTo)
+      : null;
+    const parentUserName = parentComment
+      ? `${parentComment.userId?.firstName ?? ""} ${
+          parentComment.userId?.lastName ?? ""
+        }`.trim()
+      : null;
 
-  const isReply = !!comment.replyTo;
+    const isReply = !!comment.replyTo;
 
-  return (
-    <View
-      className={`px-4 py-3 border-b border-slate-100 ${
-        isReply ? "ml-8 bg-blue-50/30" : ""
-      }`}
-    >
-      {/* Reply indicator */}
-      {isReply && parentUserName && (
-        <View className="mb-2 flex-row items-center gap-1.5 pb-2 border-l-2 border-blue-400 pl-3">
-          <MaterialCommunityIcons name="reply" size={12} color="#3B82F6" />
-          <Text className="text-[11px] font-poppins-medium text-blue-600">
-            Replying to {parentUserName}
-          </Text>
-        </View>
-      )}
-
-      <View className="flex-row">
-        <View className="h-8 w-8 rounded-full bg-gradient-to-br from-blue-400 to-purple-500 items-center justify-center mr-3 flex-shrink-0">
-          <Text className="text-white text-[11px] font-poppins-bold">
-            {userName.charAt(0).toUpperCase()}
-          </Text>
-        </View>
-
-        <View className="flex-1">
-          <View className="flex-row items-center gap-2 mb-1">
-            <Text className="text-[13px] font-poppins-bold text-slate-900">
-              {userName || "Traveler"}
-            </Text>
-            <Text className="text-[11px] font-poppins-medium text-slate-500">
-              {timeAgo}
+    return (
+      <View
+        className={`px-4 py-3 border-b border-slate-100 ${
+          isReply ? "ml-8 bg-blue-50/30" : ""
+        }`}
+      >
+        {/* Reply indicator */}
+        {isReply && parentUserName && (
+          <View className="mb-2 flex-row items-center gap-1.5 pb-2 border-l-2 border-blue-400 pl-3">
+            <MaterialCommunityIcons name="reply" size={12} color="#3B82F6" />
+            <Text className="text-[11px] font-poppins-medium text-blue-600">
+              Replying to {parentUserName}
             </Text>
           </View>
-          <Text className="text-[13px] font-poppins-medium text-slate-700 leading-5">
-            {comment.message}
-          </Text>
-          <Pressable className="mt-2 flex-row items-center gap-1">
-            <MaterialCommunityIcons
-              name="heart-outline"
-              size={14}
-              color="#94A3B8"
-            />
-            <Text className="text-[11px] font-poppins-medium text-slate-500">
-              Like
+        )}
+
+        <View className="flex-row">
+          <View className="h-8 w-8 rounded-full bg-gradient-to-br from-blue-400 to-purple-500 items-center justify-center mr-3 flex-shrink-0">
+            <Text className="text-white text-[11px] font-poppins-bold">
+              {userName.charAt(0).toUpperCase()}
             </Text>
-          </Pressable>
+          </View>
+
+          <View className="flex-1">
+            <View className="flex-row items-center gap-2 mb-1">
+              <Text className="text-[13px] font-poppins-bold text-slate-900">
+                {userName || "Traveler"}
+              </Text>
+              <Text className="text-[11px] font-poppins-medium text-slate-500">
+                {timeAgo}
+              </Text>
+            </View>
+            <Text className="text-[13px] font-poppins-medium text-slate-700 leading-5">
+              {comment.message}
+            </Text>
+            <Pressable className="mt-2 flex-row items-center gap-1">
+              <MaterialCommunityIcons
+                name="heart-outline"
+                size={14}
+                color="#94A3B8"
+              />
+              <Text className="text-[11px] font-poppins-medium text-slate-500">
+                Like
+              </Text>
+            </Pressable>
+          </View>
         </View>
       </View>
-    </View>
-  );
-};
+    );
+  },
+);
+CommentItem.displayName = "CommentItem";
 
-const CommentsSection = ({ post }: { post: NetworkingPost }) => {
+const CommentsSection = memo(({ post }: { post: NetworkingPost }) => {
   const comments = post.comments ?? [];
 
   if (comments.length === 0) {
@@ -502,10 +526,11 @@ const CommentsSection = ({ post }: { post: NetworkingPost }) => {
       ))}
     </View>
   );
-};
+});
+CommentsSection.displayName = "CommentsSection";
 
 // --- Comment Input Section ---
-const CommentInputSection = () => {
+const CommentInputSection = memo(() => {
   return (
     <LinearGradient
       colors={["#FFFFFF", "#F8FAFC"]}
@@ -527,7 +552,8 @@ const CommentInputSection = () => {
       </Pressable>
     </LinearGradient>
   );
-};
+});
+CommentInputSection.displayName = "CommentInputSection";
 
 export default function NetworkingDetailScreen() {
   const { id, post: postParam } = useLocalSearchParams<{
@@ -536,23 +562,74 @@ export default function NetworkingDetailScreen() {
   }>();
   const router = useRouter();
   const scrollViewRef = useRef<ScrollView>(null);
-  const [scrollPosition, setScrollPosition] = useState(0);
 
-  // Parse post from route params or use mock data if not available
-  const post: NetworkingPost = postParam ? JSON.parse(postParam) : null;
+  // Parse post from route params
+  let post: NetworkingPost | null = null;
+  try {
+    post = postParam ? JSON.parse(postParam) : null;
+  } catch (error) {
+    console.error("Failed to parse post:", error);
+  }
 
   const handleBackPress = () => {
     router.back();
   };
+
+  // If no post is available, show error state
+  if (!post) {
+    return (
+      <SafeAreaView className="flex-1 bg-white">
+        <View className="absolute top-0 left-0 right-0 z-50 flex-row items-center justify-between px-4 py-3 bg-white/80 border-b border-slate-200">
+          <Pressable
+            onPress={handleBackPress}
+            className="h-9 w-9 items-center justify-center rounded-full bg-slate-100 active:opacity-75"
+          >
+            <MaterialCommunityIcons
+              name="arrow-left"
+              size={20}
+              color="#0F172A"
+            />
+          </Pressable>
+          <View className="flex-1" />
+          <Pressable className="h-9 w-9 items-center justify-center rounded-full bg-slate-100 active:opacity-75">
+            <MaterialCommunityIcons
+              name="bookmark-outline"
+              size={20}
+              color="#0F172A"
+            />
+          </Pressable>
+        </View>
+
+        <View className="flex-1 items-center justify-center px-6">
+          <MaterialCommunityIcons
+            name="alert-circle-outline"
+            size={48}
+            color="#DC2626"
+          />
+          <Text className="mt-4 text-[18px] font-poppins-bold text-slate-900 text-center">
+            Unable to Load Post
+          </Text>
+          <Text className="mt-2 text-[14px] font-poppins-medium text-slate-600 text-center">
+            The post data is missing or invalid.
+          </Text>
+          <Pressable
+            onPress={handleBackPress}
+            className="mt-6 bg-blue-600 px-6 py-3 rounded-lg active:bg-blue-700"
+          >
+            <Text className="text-white font-poppins-bold text-[14px]">
+              Go Back
+            </Text>
+          </Pressable>
+        </View>
+      </SafeAreaView>
+    );
+  }
 
   return (
     <SafeAreaView className="flex-1 bg-white">
       <ScrollView
         ref={scrollViewRef}
         showsVerticalScrollIndicator={false}
-        onScroll={({ nativeEvent }) => {
-          setScrollPosition(nativeEvent.contentOffset.y);
-        }}
         scrollEventThrottle={16}
         className="flex-1"
       >
@@ -560,9 +637,7 @@ export default function NetworkingDetailScreen() {
         <View className="absolute top-0 left-0 right-0 z-50 flex-row items-center justify-between px-4 py-3 bg-white/80">
           <Pressable
             onPress={handleBackPress}
-            className={`h-9 w-9 items-center justify-center rounded-full ${
-              scrollPosition > 100 ? "bg-slate-100" : "bg-white/50"
-            } active:opacity-75`}
+            className="h-9 w-9 items-center justify-center rounded-full bg-slate-100 active:opacity-75"
           >
             <MaterialCommunityIcons
               name="arrow-left"
