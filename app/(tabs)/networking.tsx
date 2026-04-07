@@ -45,7 +45,7 @@ export default function NetworkingScreen() {
         </Text>
         <Pressable
           className="mt-5 rounded-full bg-red-600 px-5 py-3 active:opacity-80"
-          onPress={() => void refetch()}
+          onPress={() => refetch()}
         >
           <Text className="font-poppins-bold text-white">Try Again</Text>
         </Pressable>

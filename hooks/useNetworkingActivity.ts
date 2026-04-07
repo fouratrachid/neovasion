@@ -1,6 +1,8 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { useMemo } from "react";
 import { NetworkingActivityResponse } from "@/components/networking/types";
 import { networkingService } from "@/services/networkingService";
+import { queryKeys } from "@/hooks/queryKeys";
 
 export interface UseNetworkingActivityReturn {
     data: NetworkingActivityResponse | null;
@@ -8,53 +10,41 @@ export interface UseNetworkingActivityReturn {
     isLoading: boolean;
     isRefreshing: boolean;
     error: string | null;
-    onRefresh: () => Promise<void>;
-    refetch: () => Promise<void>;
+    onRefresh: () => void;
+    refetch: () => void;
 }
 
 export const useNetworkingActivity = (): UseNetworkingActivityReturn => {
-    const [data, setData] = useState<NetworkingActivityResponse | null>(null);
-    const [isLoading, setIsLoading] = useState(true);
-    const [isRefreshing, setIsRefreshing] = useState(false);
-    const [error, setError] = useState<string | null>(null);
-
-    const refetch = useCallback(async () => {
-        try {
-            setError(null);
+    // TanStack Query handles loading, error, refetching automatically
+    const {
+        data,
+        isLoading,
+        error,
+        refetch,
+        isFetching,
+    } = useQuery({
+        queryKey: queryKeys.networking.activity(),
+        queryFn: async () => {
+            console.log("🌐 useNetworkingActivity: Fetching networking activity...");
             const response = await networkingService.fetchPublicNetworking();
-            setData(response);
-        } catch (err) {
-            const message =
-                err instanceof Error ? err.message : "Failed to load networking activity";
-            setError(message);
-        }
-    }, []);
-
-    useEffect(() => {
-        const load = async () => {
-            setIsLoading(true);
-            await refetch();
-            setIsLoading(false);
-        };
-
-        void load();
-    }, [refetch]);
-
-    const onRefresh = useCallback(async () => {
-        setIsRefreshing(true);
-        await refetch();
-        setIsRefreshing(false);
-    }, [refetch]);
+            console.log("✅ useNetworkingActivity: Networking activity fetched successfully");
+            return response;
+        },
+        staleTime: 5 * 60 * 1000, // 5 minutes
+        gcTime: 10 * 60 * 1000, // 10 minutes (formerly cacheTime)
+        retry: 2, // Retry failed requests 2 times
+        refetchOnWindowFocus: false,
+    });
 
     const posts = useMemo(() => data?.posts ?? [], [data]);
 
     return {
-        data,
+        data: data ?? null,
         posts,
         isLoading,
-        isRefreshing,
-        error,
-        onRefresh,
+        isRefreshing: isFetching, // isFetching is true when ANY request is in flight
+        error: error?.message ?? null,
+        onRefresh: refetch, // Direct refetch from useQuery
         refetch,
     };
 };
