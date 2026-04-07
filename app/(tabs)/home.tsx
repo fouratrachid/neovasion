@@ -55,13 +55,13 @@ const HomeTopBar = () => {
           }
         }}
         className="w-12 h-12 rounded-full overflow-hidden bg-blue-100 items-center justify-center border-2 border-white"
-        style={{
-          elevation: 2,
-          shadowColor: "#000",
-          shadowOpacity: 0.1,
-          shadowRadius: 3,
-          shadowOffset: { width: 0, height: 1 },
-        }}
+        // style={{
+        //   elevation: 2,
+        //   shadowColor: "#000",
+        //   shadowOpacity: 0.1,
+        //   shadowRadius: 3,
+        //   shadowOffset: { width: 0, height: 1 },
+        // }}
       >
         {user?.imageLink ? (
           <SafeImage
