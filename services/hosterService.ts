@@ -79,7 +79,7 @@ class HosterService {
           method: 'DELETE',
         },
       );
-      console.log('✅ HosterService: Hoster request deleted successfully');
+      console.log('✅ HosterService: Hoster request deleted successfully', response);
       return response;
     } catch (error) {
       console.error('❌ HosterService: Failed to delete hoster request:', error);
