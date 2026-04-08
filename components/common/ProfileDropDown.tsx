@@ -3,13 +3,7 @@ import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import React, { memo } from "react";
 import { useTranslation } from "react-i18next";
-import {
-  Modal,
-  Text,
-  TouchableOpacity,
-  View,
-  Pressable,
-} from "react-native";
+import { Modal, Text, TouchableOpacity, View, Pressable } from "react-native";
 import { useAuthProfile } from "@/hooks/useAuthProfile";
 import { useAuthStore } from "@/store/authStore";
 import { SafeImage } from "@/components/SafeImage";
@@ -100,9 +94,7 @@ const ProfileDropDown = memo(
                     className="text-[15px] font-poppins-bold text-slate-900"
                     numberOfLines={1}
                   >
-                    {user
-                      ? `${user.firstName} ${user.lastName}`
-                      : "Guest"}
+                    {user ? `${user.firstName} ${user.lastName}` : "Guest"}
                   </Text>
                   <Text
                     className="text-[12px] font-poppins-medium text-slate-500 mt-0.5"
@@ -122,20 +114,12 @@ const ProfileDropDown = memo(
                 className="flex-row items-center px-4 py-3 active:bg-slate-50"
               >
                 <View className="w-8 h-8 rounded-full bg-slate-100 items-center justify-center mr-3">
-                  <Ionicons
-                    name="person-outline"
-                    size={16}
-                    color="#475569"
-                  />
+                  <Ionicons name="person-outline" size={16} color="#475569" />
                 </View>
                 <Text className="flex-1 text-[14px] font-poppins-medium text-slate-800">
                   {t("common.account.profile") || "My Profile"}
                 </Text>
-                <Ionicons
-                  name="chevron-forward"
-                  size={14}
-                  color="#CBD5E1"
-                />
+                <Ionicons name="chevron-forward" size={14} color="#CBD5E1" />
               </TouchableOpacity>
 
               {/* Become a Trip Hoster */}
@@ -152,7 +136,7 @@ const ProfileDropDown = memo(
                 </View>
                 <View className="flex-1">
                   <Text className="text-[14px] font-poppins-medium text-slate-800">
-                    Become a Trip Hoster
+                    Become a Trip Host
                   </Text>
                   <Text className="text-[11px] font-poppins-medium text-slate-400 mt-0.5">
                     Host & share your trips
@@ -174,11 +158,7 @@ const ProfileDropDown = memo(
                 className="flex-row items-center px-4 py-3 active:bg-red-50/50"
               >
                 <View className="w-8 h-8 rounded-full bg-red-50 items-center justify-center mr-3">
-                  <Ionicons
-                    name="log-out-outline"
-                    size={16}
-                    color="#EF4444"
-                  />
+                  <Ionicons name="log-out-outline" size={16} color="#EF4444" />
                 </View>
                 <Text className="flex-1 text-[14px] font-poppins-medium text-red-500">
                   {t("common.account.logout") || "Logout"}
