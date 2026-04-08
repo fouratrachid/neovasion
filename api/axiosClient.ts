@@ -10,21 +10,21 @@ export const axiosClient = axios.create({
         'Content-Type': 'application/json',
     },
     // Required to send HTTP-Only cookies on some endpoints for refresh
-    withCredentials: true 
+    withCredentials: true
 });
 
 let isRefreshing = false;
 let failedQueue: Array<{ resolve: (val: string) => void, reject: (err: any) => void }> = [];
 
 const processQueue = (error: any, token: string | null = null) => {
-  failedQueue.forEach((prom) => {
-    if (error) {
-      prom.reject(error);
-    } else {
-      prom.resolve(token as string);
-    }
-  });
-  failedQueue = [];
+    failedQueue.forEach((prom) => {
+        if (error) {
+            prom.reject(error);
+        } else {
+            prom.resolve(token as string);
+        }
+    });
+    failedQueue = [];
 };
 
 // Request Interceptor: Auto-Inject Auth Header
@@ -57,7 +57,7 @@ axiosClient.interceptors.response.use(
         if (error.response?.status === 401 && !originalRequest._retry) {
             if (isRefreshing) {
                 // If it's already refreshing, queue the request until the new token arrives
-                return new Promise(function(resolve, reject) {
+                return new Promise(function (resolve, reject) {
                     failedQueue.push({ resolve, reject });
                 }).then(token => {
                     originalRequest.headers['Authorization'] = `Bearer ${token}`;
@@ -71,12 +71,17 @@ axiosClient.interceptors.response.use(
             isRefreshing = true;
 
             try {
-                // Manually trigger refresh using a raw axios instance to prevent loop interceptors
-                const response = await axios.post(`${BASE_URL}/auth/refresh-token`, {}, {
-                    withCredentials: true,
-                    headers: { 'Content-Type': 'application/json' }
-                });
-                
+                // Get the current access token to send as refresh token
+                const currentToken = await SecureStore.getItemAsync('auth_token');
+                console.log(`🔄 Attempting token refresh for ${requestUrl}...`);
+                const response = await axios.post(`${BASE_URL}/auth/refresh-token`,
+                    { refreshToken: currentToken },
+                    {
+                        withCredentials: true,
+                        headers: { 'Content-Type': 'application/json' }
+                    }
+                );
+                console.log('✅ Token refresh response:', response);
                 // Parse the payload based on exact potential API standards
                 const newAccessToken = response.data?.accessToken || response.data?.data?.accessToken || response.data?.data?.token;
 
@@ -86,7 +91,7 @@ axiosClient.interceptors.response.use(
 
                     // Re-route Failed Queries
                     processQueue(null, newAccessToken);
-                    
+
                     // Re-run Original Blocked Action
                     originalRequest.headers['Authorization'] = `Bearer ${newAccessToken}`;
                     return axiosClient(originalRequest);
@@ -96,7 +101,7 @@ axiosClient.interceptors.response.use(
             } catch (err) {
                 // Irrecoverable auth state
                 processQueue(err, null);
-                await SecureStore.deleteItemAsync('auth_token').catch(() => {});
+                await SecureStore.deleteItemAsync('auth_token').catch(() => { });
                 return Promise.reject(err);
             } finally {
                 isRefreshing = false;
