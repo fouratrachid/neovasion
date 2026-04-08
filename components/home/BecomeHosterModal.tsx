@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import {
   Animated,
+  Alert,
   Dimensions,
   KeyboardAvoidingView,
   Modal,
@@ -218,8 +219,23 @@ export default function BecomeHosterModal({
     try {
       setIsDeletingRequest(true);
       // Delete the existing request
-      await hosterService.deleteHosterRequest();
-
+      console.log("Deleting existing request...");
+      try {
+        const deleteResponse = await hosterService.deleteHosterRequest();
+        console.log(
+          "✅ BecomeHosterModal: Delete succeeded with response:",
+          deleteResponse,
+        );
+      } catch (deleteErr: any) {
+        console.error(
+          "❌ BecomeHosterModal: Delete FAILED with error:",
+          deleteErr,
+        );
+        console.error("❌ Delete error message:", deleteErr.message);
+        console.error("❌ Delete error response:", deleteErr.response?.data);
+        console.error("❌ Full error object:", deleteErr);
+        throw deleteErr;
+      }
       // Reset form state
       setShowNewRequestModal(false);
       setPhone("");
@@ -591,7 +607,21 @@ export default function BecomeHosterModal({
                 }}
               >
                 <Pressable
-                  onPress={() => setShowNewRequestModal(true)}
+                  onPress={() => {
+                    console.log("🔘 Create new request button pressed");
+                    Alert.alert(
+                      "Submit New Request?",
+                      `You already have a ${existingRequest.status.toLowerCase()} request. Do you want to submit a new one? This will delete your previous request.`,
+                      [
+                        { text: "Cancel", style: "cancel" },
+                        {
+                          text: "Yes, Proceed",
+                          onPress: handleNewRequest,
+                          style: "destructive",
+                        },
+                      ],
+                    );
+                  }}
                   className="rounded-2xl overflow-hidden active:opacity-90 mb-3"
                 >
                   <LinearGradient
@@ -626,51 +656,6 @@ export default function BecomeHosterModal({
             </KeyboardAvoidingView>
           </Animated.View>
         </Animated.View>
-
-        {/* New Request Confirmation Modal */}
-        <Modal visible={showNewRequestModal} transparent animationType="fade">
-          <View
-            className="flex-1 items-center justify-center px-5"
-            style={{ backgroundColor: "rgba(0,0,0,0.5)" }}
-          >
-            <View className="bg-white rounded-3xl px-5 py-6 w-full">
-              <Text className="text-[18px] font-poppins-bold text-slate-900 mb-2">
-                Submit New Request?
-              </Text>
-              <Text className="text-[14px] font-poppins-medium text-slate-600 mb-6">
-                You already have a {existingRequest.status.toLowerCase()}{" "}
-                request. Do you want to submit a new one?
-              </Text>
-
-              <View className="flex-row gap-3">
-                <Pressable
-                  onPress={() => setShowNewRequestModal(false)}
-                  disabled={isDeletingRequest}
-                  className={`flex-1 rounded-xl border border-slate-300 py-3 items-center active:bg-slate-50 ${isDeletingRequest ? "opacity-50" : ""}`}
-                >
-                  <Text className="text-slate-700 font-poppins-bold text-[14px]">
-                    Cancel
-                  </Text>
-                </Pressable>
-
-                <Pressable
-                  onPress={handleNewRequest}
-                  disabled={isDeletingRequest}
-                  className={`flex-1 rounded-xl overflow-hidden active:opacity-90 ${isDeletingRequest ? "opacity-60" : ""}`}
-                >
-                  <LinearGradient
-                    colors={["#0A2B72", "#1E50A0"]}
-                    className="py-3 items-center"
-                  >
-                    <Text className="text-white font-poppins-bold text-[14px]">
-                      {isDeletingRequest ? "Deleting..." : "Yes, Proceed"}
-                    </Text>
-                  </LinearGradient>
-                </Pressable>
-              </View>
-            </View>
-          </View>
-        </Modal>
       </Modal>
     );
   }
