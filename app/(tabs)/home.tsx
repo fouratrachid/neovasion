@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useRef } from "react";
 import {
   ActivityIndicator,
   FlatList,
@@ -19,11 +19,19 @@ import GuideCard from "@/components/home/GuideCard";
 import HomeHero from "@/components/home/HomeHero";
 import SectionHeader from "@/components/home/SectionHeader";
 import TripCard from "@/components/home/TripCard";
+import ProfileDropDown from "@/components/common/ProfileDropDown";
+import BecomeHosterModal from "@/components/home/BecomeHosterModal";
 import { useHomeActivity } from "@/hooks/useHomeActivity";
 import { useAuthProfile } from "@/hooks/useAuthProfile";
 import { SafeImage } from "@/components/SafeImage";
 
-const HomeTopBar = () => {
+const HomeTopBar = ({
+  onAvatarPress,
+  avatarRef,
+}: {
+  onAvatarPress: () => void;
+  avatarRef: React.RefObject<View>;
+}) => {
   const { data: profileResp, isLoading } = useAuthProfile();
   const router = useRouter();
   const user = profileResp?.data;
@@ -46,22 +54,15 @@ const HomeTopBar = () => {
         )}
       </View>
       <Pressable
+        ref={avatarRef as any}
         onPress={() => {
           if (!user) {
             router.push("/(auth)/sign-in");
           } else {
-            // Navigate to profile or show settings
-            router.push("/profile/edit");
+            onAvatarPress();
           }
         }}
         className="w-12 h-12 rounded-full overflow-hidden bg-blue-100 items-center justify-center border-2 border-white"
-        // style={{
-        //   elevation: 2,
-        //   shadowColor: "#000",
-        //   shadowOpacity: 0.1,
-        //   shadowRadius: 3,
-        //   shadowOffset: { width: 0, height: 1 },
-        // }}
       >
         {user?.imageLink ? (
           <SafeImage
@@ -85,6 +86,20 @@ const HomeScreen = () => {
   const tabBarHeight = useBottomTabBarHeight();
   const { data, isLoading, isRefreshing, error, refetch, onRefresh, stats } =
     useHomeActivity();
+
+  // Dropdown & modal state
+  const [showDropdown, setShowDropdown] = useState(false);
+  const [showHosterModal, setShowHosterModal] = useState(false);
+  const avatarRef = useRef<View>(null);
+  const [dropdownAnchor, setDropdownAnchor] = useState({ x: 0, y: 60 });
+
+  const handleAvatarPress = () => {
+    // Measure avatar position for dropdown placement
+    avatarRef.current?.measureInWindow((x, y, w, h) => {
+      setDropdownAnchor({ x: x, y: y + h + 4 });
+      setShowDropdown(true);
+    });
+  };
 
   if (isLoading) {
     return (
@@ -121,7 +136,7 @@ const HomeScreen = () => {
 
   return (
     <SafeAreaView className="flex-1 bg-slate-100" edges={["top", "bottom"]}>
-      <HomeTopBar />
+      <HomeTopBar onAvatarPress={handleAvatarPress} avatarRef={avatarRef} />
 
       <ScrollView
         className="flex-1"
@@ -169,6 +184,20 @@ const HomeScreen = () => {
           <GuideCard key={profile._id} profile={profile} />
         ))}
       </ScrollView>
+
+      {/* Profile Dropdown */}
+      <ProfileDropDown
+        visible={showDropdown}
+        onClose={() => setShowDropdown(false)}
+        anchorPosition={dropdownAnchor}
+        onPressBecomeHoster={() => setShowHosterModal(true)}
+      />
+
+      {/* Become Hoster Modal */}
+      <BecomeHosterModal
+        visible={showHosterModal}
+        onClose={() => setShowHosterModal(false)}
+      />
     </SafeAreaView>
   );
 };
