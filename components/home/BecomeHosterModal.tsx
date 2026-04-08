@@ -119,7 +119,7 @@ export default function BecomeHosterModal({
     linkedin: { link: "", followers: "" },
   });
   const [expandedSocial, setExpandedSocial] = useState<SocialPlatform | null>(
-    null
+    null,
   );
   const [step, setStep] = useState<1 | 2>(1);
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -224,7 +224,7 @@ export default function BecomeHosterModal({
   const handleSubmit = async () => {
     // Build social entries (only filled ones)
     const socialEntries: SocialEntry[] = SOCIAL_PLATFORMS.filter(
-      (p) => socials[p.key].link.trim() && socials[p.key].followers.trim()
+      (p) => socials[p.key].link.trim() && socials[p.key].followers.trim(),
     ).map((p) => ({
       social: p.key,
       sociallink: socials[p.key].link.trim(),
@@ -252,7 +252,7 @@ export default function BecomeHosterModal({
   const updateSocial = (
     platform: SocialPlatform,
     field: "link" | "followers",
-    value: string
+    value: string,
   ) => {
     setSocials((prev) => ({
       ...prev,
@@ -261,7 +261,7 @@ export default function BecomeHosterModal({
   };
 
   const filledSocialsCount = SOCIAL_PLATFORMS.filter(
-    (p) => socials[p.key].link.trim() && socials[p.key].followers.trim()
+    (p) => socials[p.key].link.trim() && socials[p.key].followers.trim(),
   ).length;
 
   // === SUCCESS STATE ===
@@ -304,7 +304,7 @@ export default function BecomeHosterModal({
                   Request Submitted!
                 </Text>
                 <Text className="text-[15px] font-poppins-medium text-slate-500 text-center leading-6 mb-2">
-                  Your application to become a trip hoster has been sent
+                  Your application to become a trip host has been sent
                   successfully. Our team will review it shortly.
                 </Text>
                 <View className="bg-amber-50 rounded-2xl px-5 py-3 mt-4 flex-row items-center">
@@ -371,16 +371,12 @@ export default function BecomeHosterModal({
                       onPress={goBackToStep1}
                       className="w-9 h-9 rounded-full bg-white items-center justify-center mr-3 border border-slate-200"
                     >
-                      <Ionicons
-                        name="arrow-back"
-                        size={18}
-                        color="#334155"
-                      />
+                      <Ionicons name="arrow-back" size={18} color="#334155" />
                     </Pressable>
                   )}
                   <View className="flex-1">
                     <Text className="text-[22px] font-poppins-bold text-slate-900">
-                      Become a Hoster
+                      Become a Host
                     </Text>
                     <Text className="text-[13px] font-poppins-medium text-slate-500 mt-0.5">
                       {step === 1
@@ -572,11 +568,7 @@ export default function BecomeHosterModal({
 
                   {errors.socials ? (
                     <View className="bg-red-50 rounded-2xl px-4 py-3 flex-row items-center mb-4">
-                      <Ionicons
-                        name="alert-circle"
-                        size={18}
-                        color="#EF4444"
-                      />
+                      <Ionicons name="alert-circle" size={18} color="#EF4444" />
                       <Text className="ml-2 text-[12px] font-poppins-medium text-red-600">
                         {errors.socials}
                       </Text>
@@ -594,16 +586,14 @@ export default function BecomeHosterModal({
                       <View key={platform.key} className="mb-3">
                         <Pressable
                           onPress={() =>
-                            setExpandedSocial(
-                              isExpanded ? null : platform.key
-                            )
+                            setExpandedSocial(isExpanded ? null : platform.key)
                           }
                           className={`flex-row items-center bg-white rounded-2xl border px-4 py-3.5 ${
                             isExpanded
                               ? "border-[#0A2B72] bg-blue-50/30"
                               : isFilled
-                              ? "border-emerald-300 bg-emerald-50/30"
-                              : "border-slate-200"
+                                ? "border-emerald-300 bg-emerald-50/30"
+                                : "border-slate-200"
                           }`}
                         >
                           <View
@@ -630,7 +620,7 @@ export default function BecomeHosterModal({
                                 />
                                 <Text className="text-[11px] font-poppins-bold text-emerald-700 ml-1">
                                   {parseInt(
-                                    socials[platform.key].followers
+                                    socials[platform.key].followers,
                                   ).toLocaleString()}
                                 </Text>
                               </View>
@@ -642,9 +632,7 @@ export default function BecomeHosterModal({
                             </View>
                           ) : (
                             <Ionicons
-                              name={
-                                isExpanded ? "chevron-up" : "chevron-down"
-                              }
+                              name={isExpanded ? "chevron-up" : "chevron-down"}
                               size={18}
                               color="#94A3B8"
                             />
@@ -686,7 +674,7 @@ export default function BecomeHosterModal({
                                     updateSocial(
                                       platform.key,
                                       "followers",
-                                      v.replace(/[^0-9]/g, "")
+                                      v.replace(/[^0-9]/g, ""),
                                     )
                                   }
                                   placeholder="e.g. 10000"
