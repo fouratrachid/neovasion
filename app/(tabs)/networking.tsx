@@ -36,8 +36,10 @@ export default function NetworkingScreen() {
 
   const handleProfilePress = (profileId: string) => {
     // Navigate to a profile details screen when clicked
-    // This could just be a dummy router push or to the existing structure
-    // router.push({ pathname: "/profile/[id]", params: { id: profileId } });
+    router.push({
+      pathname: "/networking/profile/[id]" as any,
+      params: { id: profileId },
+    });
   };
 
   const handleRefresh = () => {
@@ -146,7 +148,7 @@ export default function NetworkingScreen() {
         renderItem={({ item }) => (
           <ProfileCard
             profile={item}
-            onPress={() => handleProfilePress(item._id)}
+            onPress={() => handleProfilePress(item.uniqueName || item._id)}
           />
         )}
         contentContainerStyle={{
