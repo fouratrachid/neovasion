@@ -16,7 +16,7 @@ import { MaterialCommunityIcons, Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import { useHosterRequest } from "@/hooks/useHosterRequest";
 import { useHosterStatus } from "@/hooks/useHosterStatus";
-import { SocialEntry } from "@/services/hosterService";
+import { SocialEntry, hosterService } from "@/services/hosterService";
 
 const { height } = Dimensions.get("window");
 
@@ -139,6 +139,7 @@ export default function BecomeHosterModal({
   const [step, setStep] = useState<1 | 2>(1);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [showNewRequestModal, setShowNewRequestModal] = useState(false);
+  const [isDeletingRequest, setIsDeletingRequest] = useState(false);
 
   // Animations
   const slideAnim = useRef(new Animated.Value(height)).current;
@@ -213,25 +214,41 @@ export default function BecomeHosterModal({
     onClose();
   };
 
-  const handleNewRequest = () => {
-    setShowNewRequestModal(false);
-    setPhone("");
-    setRole("");
-    setPresetSocials({
-      instagram: { link: "", followers: "" },
-      tiktok: { link: "", followers: "" },
-      youtube: { link: "", followers: "" },
-      facebook: { link: "", followers: "" },
-      twitter: { link: "", followers: "" },
-      linkedin: { link: "", followers: "" },
-    });
-    setCustomSocials([]);
-    setStep(1);
-    setErrors({});
-    setExpandedPreset(null);
-    setExpandedCustomIdx(null);
-    reset();
-    successScale.setValue(0);
+  const handleNewRequest = async () => {
+    try {
+      setIsDeletingRequest(true);
+      // Delete the existing request
+      await hosterService.deleteHosterRequest();
+
+      // Reset form state
+      setShowNewRequestModal(false);
+      setPhone("");
+      setRole("");
+      setPresetSocials({
+        instagram: { link: "", followers: "" },
+        tiktok: { link: "", followers: "" },
+        youtube: { link: "", followers: "" },
+        facebook: { link: "", followers: "" },
+        twitter: { link: "", followers: "" },
+        linkedin: { link: "", followers: "" },
+      });
+      setCustomSocials([]);
+      setStep(1);
+      setErrors({});
+      setExpandedPreset(null);
+      setExpandedCustomIdx(null);
+      reset();
+      successScale.setValue(0);
+
+      // Refetch status to update the UI
+      await refetchStatus();
+    } catch (err: any) {
+      setErrors({
+        submit: err.message || "Failed to delete request. Please try again.",
+      });
+    } finally {
+      setIsDeletingRequest(false);
+    }
   };
 
   const validateStep1 = (): boolean => {
@@ -628,7 +645,8 @@ export default function BecomeHosterModal({
               <View className="flex-row gap-3">
                 <Pressable
                   onPress={() => setShowNewRequestModal(false)}
-                  className="flex-1 rounded-xl border border-slate-300 py-3 items-center active:bg-slate-50"
+                  disabled={isDeletingRequest}
+                  className={`flex-1 rounded-xl border border-slate-300 py-3 items-center active:bg-slate-50 ${isDeletingRequest ? "opacity-50" : ""}`}
                 >
                   <Text className="text-slate-700 font-poppins-bold text-[14px]">
                     Cancel
@@ -637,14 +655,15 @@ export default function BecomeHosterModal({
 
                 <Pressable
                   onPress={handleNewRequest}
-                  className="flex-1 rounded-xl overflow-hidden active:opacity-90"
+                  disabled={isDeletingRequest}
+                  className={`flex-1 rounded-xl overflow-hidden active:opacity-90 ${isDeletingRequest ? "opacity-60" : ""}`}
                 >
                   <LinearGradient
                     colors={["#0A2B72", "#1E50A0"]}
                     className="py-3 items-center"
                   >
                     <Text className="text-white font-poppins-bold text-[14px]">
-                      Yes, Proceed
+                      {isDeletingRequest ? "Deleting..." : "Yes, Proceed"}
                     </Text>
                   </LinearGradient>
                 </Pressable>

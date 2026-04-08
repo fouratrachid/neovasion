@@ -69,6 +69,23 @@ class HosterService {
       throw error;
     }
   }
+
+  async deleteHosterRequest(): Promise<{ message: string }> {
+    try {
+      console.log('🎯 HosterService: Deleting existing hoster request...');
+      const response = await apiService.request<{ message: string }>(
+        'demande-hosters/',
+        {
+          method: 'DELETE',
+        },
+      );
+      console.log('✅ HosterService: Hoster request deleted successfully');
+      return response;
+    } catch (error) {
+      console.error('❌ HosterService: Failed to delete hoster request:', error);
+      throw error;
+    }
+  }
 }
 
 export const hosterService = new HosterService();
