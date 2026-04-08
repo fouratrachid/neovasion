@@ -1,5 +1,4 @@
 import { colors } from "@/constants/Colors";
-
 import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import React, { memo } from "react";
@@ -10,7 +9,6 @@ import {
   TouchableOpacity,
   View,
   Pressable,
-  ActivityIndicator,
   Image,
 } from "react-native";
 
@@ -18,9 +16,6 @@ interface ProfileDropDownProps {
   visible: boolean;
   onClose: () => void;
   anchorPosition?: { x: number; y: number };
-  showJosoor?: boolean;
-  onPressJosoor?: () => void;
-  onPressChangeLanguage?: () => void;
 }
 
 const ProfileDropDown = memo(
@@ -28,20 +23,8 @@ const ProfileDropDown = memo(
     visible,
     onClose,
     anchorPosition = { x: 0, y: 50 },
-    showJosoor = false,
-    onPressJosoor,
-    onPressChangeLanguage,
   }: ProfileDropDownProps) => {
     const { t } = useTranslation();
-
-    const displayUser = profile || user;
-
-    const userName =
-      displayUser?.FirstName && displayUser?.LastName
-        ? `${displayUser.FirstName} ${displayUser.LastName}`
-        : "Guest User";
-    const userEmail = displayUser?.email || "No email";
-    const userImage = displayUser?.Photo || displayUser?.google_Photo;
 
     const handleEditProfile = () => {
       onClose();
@@ -50,16 +33,6 @@ const ProfileDropDown = memo(
 
     const handleLogout = async () => {
       onClose();
-    };
-
-    const handleJosoorPress = () => {
-      onClose();
-      onPressJosoor?.();
-    };
-
-    const handleChangeLanguagePress = () => {
-      onClose();
-      onPressChangeLanguage?.();
     };
 
     if (!visible) return null;
@@ -90,7 +63,7 @@ const ProfileDropDown = memo(
             <View className="p-4 border-b border-neutral-50 dark:border-dark-700">
               <View className="flex-row items-center">
                 {/* Avatar */}
-                <View className="w-14 h-14 rounded-full bg-primary-100 dark:bg-primary-900/30 items-center justify-center overflow-hidden">
+                {/* <View className="w-14 h-14 rounded-full bg-primary-100 dark:bg-primary-900/30 items-center justify-center overflow-hidden">
                   {userImage ? (
                     <Image
                       source={{ uri: userImage }}
@@ -103,7 +76,7 @@ const ProfileDropDown = memo(
                       color={colors.primary[500]}
                     />
                   )}
-                </View>
+                </View> */}
 
                 {/* User Details */}
                 <View className="flex-1 ml-3">
@@ -111,21 +84,8 @@ const ProfileDropDown = memo(
                     className="text-lg font-bold text-neutral-900 dark:text-white"
                     numberOfLines={1}
                   >
-                    {userName}
+                    user name
                   </Text>
-                  <Text
-                    className="text-xs text-neutral-500 dark:text-neutral-400 mt-0.5"
-                    numberOfLines={1}
-                  >
-                    {userEmail}
-                  </Text>
-                  {displayUser?.role && (
-                    <View className="mt-1">
-                      <Text className="text-xs font-medium text-primary-500 dark:text-primary-400">
-                        {displayUser.role}
-                      </Text>
-                    </View>
-                  )}
                 </View>
 
                 {/* Edit Button (Account Screen Style) */}
@@ -160,40 +120,6 @@ const ProfileDropDown = memo(
                   size={16}
                   color={colors.neutral[400]}
                 />
-              </TouchableOpacity>
-
-              {showJosoor && (
-                <TouchableOpacity
-                  onPress={handleJosoorPress}
-                  className="flex-row items-center px-4 py-3 active:bg-neutral-50 dark:active:bg-dark-700"
-                >
-                  <View className="w-8 h-8 rounded-full bg-neutral-100 dark:bg-dark-700 items-center justify-center mr-3">
-                    <Ionicons
-                      name="briefcase-outline"
-                      size={18}
-                      color={colors.neutral[600]}
-                    />
-                  </View>
-                  <Text className="flex-1 text-sm font-medium text-neutral-900 dark:text-white">
-                    {t("common.account.goToJosoor") || "Go to Josoor"}
-                  </Text>
-                </TouchableOpacity>
-              )}
-
-              <TouchableOpacity
-                onPress={handleChangeLanguagePress}
-                className="flex-row items-center px-4 py-3 active:bg-neutral-50 dark:active:bg-dark-700"
-              >
-                <View className="w-8 h-8 rounded-full bg-neutral-100 dark:bg-dark-700 items-center justify-center mr-3">
-                  <Ionicons
-                    name="language-outline"
-                    size={18}
-                    color={colors.neutral[600]}
-                  />
-                </View>
-                <Text className="flex-1 text-sm font-medium text-neutral-900 dark:text-white">
-                  {t("common.account.changeLanguage") || "Change language"}
-                </Text>
               </TouchableOpacity>
 
               {/* Logout */}
