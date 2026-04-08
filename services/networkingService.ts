@@ -1,4 +1,4 @@
-import { NetworkingActivityResponse } from "@/components/networking/types";
+import { NetworkingActivityResponse, ProfilesActivityResponse } from "@/components/networking/types";
 import { apiService } from "./api";
 
 const DEFAULT_COUNTRY = "TN";
@@ -51,6 +51,26 @@ class NetworkingService {
             return response;
         } catch (error) {
             console.error("Failed to fetch connected networking posts:", error);
+            throw error;
+        }
+    }
+
+    async fetchProfiles(country: string = DEFAULT_COUNTRY): Promise<ProfilesActivityResponse> {
+        try {
+            const response = await apiService.request<ProfilesActivityResponse>(
+                "preferences/search-activity/Profiles/",
+                {
+                    method: "POST",
+                    body: JSON.stringify({ country }),
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                },
+            );
+
+            return response;
+        } catch (error) {
+            console.error("Failed to fetch networking profiles:", error);
             throw error;
         }
     }

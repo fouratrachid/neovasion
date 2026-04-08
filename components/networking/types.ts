@@ -54,3 +54,63 @@ export interface NetworkingActivityResponse {
     bounds: NetworkingBounds;
     posts: NetworkingPost[];
 }
+
+export interface ProfileMedia {
+    _id: string;
+    media: string;
+    link: string;
+}
+
+export interface ProfileLanguage {
+    _id: string;
+    langue: string;
+    level: number;
+}
+
+export interface ProfileRating {
+    _id: string;
+    iduser: string;
+    avis: number;
+    comment: string;
+}
+
+export interface ProfileFile {
+    type: string;
+    fileId: string;
+    fileName: string;
+    url: string;
+    is_active: boolean;
+    is_favorite: boolean;
+}
+
+export interface Profile {
+    _id: string;
+    userId: string;
+    firstname: string;
+    lastname: string;
+    email: string;
+    phoneNumber: string;
+    socialMedia?: ProfileMedia[];
+    language?: ProfileLanguage[];
+    speciality?: string[];
+    biography?: string;
+    about?: string;
+    rating?: ProfileRating[] | number;
+    grad?: number;
+    imageProfile?: string;
+    paiementActive?: boolean;
+    accountActive?: boolean;
+    accountReview?: number;
+    uniqueName?: string;
+    files?: ProfileFile[];
+    avgRating?: number | null;
+    maxLangLevel?: number | null;
+    tripCount?: number;
+    followerCount?: number;
+}
+
+export interface ProfilesActivityResponse {
+    country: string;
+    bounds: NetworkingBounds;
+    profiles: Profile[];
+}

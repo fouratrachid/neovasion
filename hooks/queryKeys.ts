@@ -30,6 +30,7 @@ export const queryKeys = {
     networking: {
         all: ["networking"],
         activity: () => [...queryKeys.networking.all, "activity"],
+        profiles: () => [...queryKeys.networking.all, "profiles"],
     },
 
     // Hoster requests
