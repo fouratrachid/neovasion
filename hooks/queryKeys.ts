@@ -32,6 +32,12 @@ export const queryKeys = {
         activity: () => [...queryKeys.networking.all, "activity"],
     },
 
+    // Hoster requests
+    hoster: {
+        all: ["hoster"],
+        request: () => [...queryKeys.hoster.all, "request"],
+    },
+
     // Authentication
     auth: {
         all: ["auth"],
