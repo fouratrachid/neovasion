@@ -75,6 +75,31 @@ class NetworkingService {
         }
     }
 
+    async getProfileDetails(uniqueName: string): Promise<any> {
+        const response = await apiService.request<any>(`hosters/Public/${uniqueName}`, { method: "GET" });
+        return response;
+    }
+
+    async getProfilePosts(uniqueName: string): Promise<any> {
+        const response = await apiService.request<any>(`posts/Public/hoster/${uniqueName}`, { method: "GET" });
+        return response;
+    }
+
+    async getProfileFollows(uniqueName: string): Promise<any> {
+        const response = await apiService.request<any>(`folows/Public/followings/${uniqueName}`, { method: "GET" });
+        return response;
+    }
+
+    async getProfileFiles(uniqueName: string): Promise<any> {
+        const response = await apiService.request<any>(`hosters/files/public/hoster/${uniqueName}`, { method: "GET" });
+        return response;
+    }
+
+    async getProfileTrips(uniqueName: string): Promise<any> {
+        const response = await apiService.request<any>(`trips/hoster/unique-name/${uniqueName}`, { method: "GET" });
+        return response;
+    }
+
     async reverseGeocodeCoordinates(lat: number, lon: number): Promise<string> {
         try {
             console.log(`Reverse geocoding coordinates: ${lat}, ${lon}`);
