@@ -10,6 +10,7 @@ import {
   ViewToken,
   ActivityIndicator,
   useWindowDimensions,
+  Linking,
 } from "react-native";
 import RenderHtml from "react-native-render-html";
 import { useLocalSearchParams, useRouter } from "expo-router";
@@ -153,7 +154,21 @@ export default function AccommodationDetailsScreen() {
             <Text className="ml-3 flex-1 text-slate-600 text-[13px] font-poppins-medium leading-5">
               {locationName || accommodation.position}
             </Text>
-            <Pressable className="ml-2 bg-blue-600 px-3 py-1.5 rounded-lg active:opacity-80">
+            <Pressable
+              className="ml-2 bg-blue-600 px-3 py-1.5 rounded-lg active:opacity-80"
+              onPress={() => {
+                console.log("Opening map for:", accommodation.position);
+                if (accommodation.position) {
+                  let mapQuery = accommodation.position;
+                  if (accommodation.position.includes(",")) {
+                    const [coord1, coord2] = accommodation.position.split(",");
+                    mapQuery = `${coord2.trim()},${coord1.trim()}`;
+                  }
+                  const url = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(mapQuery)}`;
+                  Linking.openURL(url);
+                }
+              }}
+            >
               <Text className="text-white text-[11px] font-poppins-bold">
                 Map
               </Text>
