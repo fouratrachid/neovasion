@@ -104,7 +104,7 @@ class NetworkingService {
         try {
             console.log(`Reverse geocoding coordinates: ${lat}, ${lon}`);
             const response = await fetch(
-                `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lon}&lon=${lat}&zoom=10&addressdetails=1`,
+                `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lon}&zoom=10&addressdetails=1`,
                 {
                     headers: {
                         "User-Agent": "TravelApp/1.0 (reverse geocoding)",
