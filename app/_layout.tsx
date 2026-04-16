@@ -24,7 +24,7 @@ LogBox.ignoreAllLogs(true);
 export default function RootLayout() {
   const { colorScheme } = useColorScheme();
   const [i18nInitialized, setI18nInitialized] = useState(false);
-  
+
   // Connect Zustand Bootstrapping Engine
   const { hydrate, isHydrating, isAuthenticated } = useAuthStore();
   const segments = useSegments();
@@ -33,27 +33,26 @@ export default function RootLayout() {
   useEffect(() => {
     // Starts the session token validation locally
     hydrate();
-    
+
     // Intiialize Localizations Globally
     initI18n().then(() => {
       setI18nInitialized(true);
     });
   }, []);
 
-  // Protected Route Logic handled reliably outside of App rendering 
-  // It listens seamlessly anytime authentication state shifts internally 
+  // Protected Route Logic handled reliably outside of App rendering
+  // It listens seamlessly anytime authentication state shifts internally
   useEffect(() => {
     // Only execute navigation rules once Hydration finishes ensuring no flickers
     if (isHydrating || !i18nInitialized) return;
 
-    const inAuthGroup = segments[0] === '(auth)';
-    
-    if (!isAuthenticated && !inAuthGroup) {
-      // Force unauthenticated users purely out of main stack screens.
-      router.replace('/(auth)/sign-in');
-    } else if (isAuthenticated && inAuthGroup) {
+    const inAuthGroup = segments[0] === "(auth)";
+
+    // We no longer force unauthenticated users to sign-in immediately.
+    // They can browse the app and will be prompted to sign in when interacting.
+    if (isAuthenticated && inAuthGroup) {
       // Avoid already logged-in users landing inside signin unexpectedly.
-      router.replace('/(tabs)/home');
+      router.replace("/(tabs)/home");
     }
   }, [isHydrating, isAuthenticated, i18nInitialized, segments]);
 
@@ -68,7 +67,9 @@ export default function RootLayout() {
         }}
       >
         <ActivityIndicator size="large" color="#2865D1" />
-        <Text style={{ marginTop: 16, fontSize: 16, color: "#001533" }}>Verifying Secure Session...</Text>
+        <Text style={{ marginTop: 16, fontSize: 16, color: "#001533" }}>
+          Verifying Secure Session...
+        </Text>
       </View>
     );
   }
