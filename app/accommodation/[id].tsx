@@ -9,7 +9,6 @@ import {
   FlatList,
   ViewToken,
   ActivityIndicator,
-  useWindowDimensions,
   Linking,
 } from "react-native";
 import RenderHtml from "react-native-render-html";
