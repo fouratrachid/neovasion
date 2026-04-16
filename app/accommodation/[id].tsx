@@ -29,8 +29,10 @@ export default function AccommodationDetailsScreen() {
   const { accommodation, isLoading, error } = useAccommodationDetails(
     id as string,
   );
-  const { locationName } = useLocationName(accommodation?.position);
 
+  console.log("Accommodation  position :", accommodation?.position);
+  const { locationName } = useLocationName(accommodation?.position);
+  console.log("Resolved Location Name:", locationName);
   const scrollY = useRef(new Animated.Value(0)).current;
 
   if (isLoading) {
