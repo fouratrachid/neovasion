@@ -99,6 +99,7 @@ axiosClient.interceptors.response.use(
                     throw new Error("No payload found on refresh token");
                 }
             } catch (err) {
+                console.log('❌ Token refresh failed:', err);
                 // Irrecoverable auth state
                 processQueue(err, null);
                 await SecureStore.deleteItemAsync('auth_token').catch(() => { });
