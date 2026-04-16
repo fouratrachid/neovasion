@@ -11,7 +11,8 @@ import {
 } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
-
+import { router } from "expo-router";
+import { useLocationName } from "@/hooks/useLocationName";
 import { Accommodation } from "./types";
 
 type AccommodationDetailCardProps = {
@@ -22,13 +23,12 @@ const { width: SCREEN_WIDTH } = Dimensions.get("window");
 const IMAGE_WIDTH = SCREEN_WIDTH - 32;
 const IMAGE_HEIGHT = 220;
 
-import { router } from "expo-router";
-
 export default function AccommodationDetailCard({
   item,
 }: AccommodationDetailCardProps) {
   const [activeImageIndex, setActiveImageIndex] = useState(0);
   const scrollX = useRef(new Animated.Value(0)).current;
+  const { locationName } = useLocationName(item.position);
 
   const files = item.files ?? [];
   const activeServices = (item.services ?? []).filter((s) => s.status);
@@ -191,7 +191,7 @@ export default function AccommodationDetailCard({
             color="#059669"
           />
           <Text className="ml-2 flex-1 text-slate-600 text-[12px] font-poppins-medium">
-            {item.position.trim()}
+            {locationName || item.position.trim()}
           </Text>
         </View>
 
