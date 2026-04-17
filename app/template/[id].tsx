@@ -366,7 +366,7 @@ export default function TemplateDetailScreen() {
             size={18}
             color="#FFF"
           />
-          <Text style={styles.ctaBtnText}>Book This Trip</Text>
+          <Text style={styles.ctaBtnText}>Use</Text>
         </Pressable>
       </View>
     </View>
