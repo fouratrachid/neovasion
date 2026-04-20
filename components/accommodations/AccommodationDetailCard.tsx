@@ -87,7 +87,7 @@ export default function AccommodationDetailCard({
           />
 
           {/* Image overlay gradient */}
-          <LinearGradient
+          {/* <LinearGradient
             colors={["transparent", "rgba(0,0,0,0.5)"]}
             style={{
               position: "absolute",
@@ -96,7 +96,7 @@ export default function AccommodationDetailCard({
               right: 0,
               height: 80,
             }}
-          />
+          /> */}
 
           {/* Type badge */}
           <View
