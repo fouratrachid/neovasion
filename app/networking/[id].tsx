@@ -9,6 +9,8 @@ import {
   useWindowDimensions,
   ScrollView,
   Share,
+  TextInput,
+  ActivityIndicator,
 } from "react-native";
 import { Video } from "expo-av";
 import RenderHtml from "react-native-render-html";
@@ -21,6 +23,9 @@ import relativeTime from "dayjs/plugin/relativeTime";
 
 import { SafeImage } from "@/components/SafeImage";
 import { useLocationName } from "@/hooks/useLocationName";
+import { useAuthStore } from "@/store/authStore";
+import { useAlert } from "@/hooks/useAlert";
+import { useNetworkingActivity } from "@/hooks/useNetworkingActivity";
 import {
   NetworkingPost,
   NetworkingMedia,
@@ -341,13 +346,38 @@ const EngagementStatsSection = memo(({ post }: { post: NetworkingPost }) => {
 EngagementStatsSection.displayName = "EngagementStatsSection";
 
 // --- Actions Row ---
+import { useNetworkingActions } from "@/hooks/useNetworkingActions";
+
 const ActionsRow = memo(({ post }: { post: NetworkingPost }) => {
-  const [isLiked, setIsLiked] = useState(post.is_like ?? false);
-  const [likeCount, setLikeCount] = useState(post.nbLikes ?? 0);
+  const { addLike, removeLike } = useNetworkingActions();
+  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
+  const { showAlert } = useAlert();
+  const router = useRouter();
 
   const handleLike = () => {
-    setIsLiked(!isLiked);
-    setLikeCount(isLiked ? likeCount - 1 : likeCount + 1);
+    if (!isAuthenticated) {
+      showAlert({
+        title: "Login Required",
+        message: "Please log in to like this post.",
+        icon: "log-in-outline",
+        iconColor: "#3B82F6",
+        buttons: [
+          { text: "Cancel", style: "cancel" },
+          {
+            text: "Log In",
+            style: "default",
+            onPress: () => router.push("/(auth)/sign-in"),
+          },
+        ],
+      });
+      return;
+    }
+
+    if (post.is_like) {
+      removeLike(post._id);
+    } else {
+      addLike(post._id);
+    }
   };
 
   const handleShare = async () => {
@@ -368,13 +398,13 @@ const ActionsRow = memo(({ post }: { post: NetworkingPost }) => {
         className="flex-1 flex-row items-center justify-center gap-2 bg-red-50 py-2.5 rounded-lg active:bg-red-100"
       >
         <MaterialCommunityIcons
-          name={isLiked ? "heart" : "heart-outline"}
+          name={post.is_like ? "heart" : "heart-outline"}
           size={18}
-          color={isLiked ? "#EF4444" : "#64748B"}
+          color={post.is_like ? "#EF4444" : "#64748B"}
         />
         <Text
           className={`text-[13px] font-poppins-bold ${
-            isLiked ? "text-red-600" : "text-slate-700"
+            post.is_like ? "text-red-600" : "text-slate-700"
           }`}
         >
           Like
@@ -541,25 +571,79 @@ const CommentsSection = memo(({ post }: { post: NetworkingPost }) => {
 CommentsSection.displayName = "CommentsSection";
 
 // --- Comment Input Section ---
-const CommentInputSection = memo(() => {
+const CommentInputSection = memo(({ postId }: { postId: string }) => {
+  const [commentText, setCommentText] = useState("");
+  const { addComment, isAddingComment } = useNetworkingActions();
+  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
+  const { showAlert } = useAlert();
+  const router = useRouter();
+
+  const handleAddComment = async () => {
+    if (!isAuthenticated) {
+      showAlert({
+        title: "Login Required",
+        message: "Please log in to add a comment.",
+        icon: "log-in-outline",
+        iconColor: "#3B82F6",
+        buttons: [
+          { text: "Cancel", style: "cancel" },
+          {
+            text: "Log In",
+            style: "default",
+            onPress: () => router.push("/(auth)/sign-in"),
+          },
+        ],
+      });
+      return;
+    }
+
+    if (!commentText.trim() || isAddingComment) return;
+
+    try {
+      await addComment({ postId, message: commentText.trim() });
+      setCommentText(""); // clear input on success
+    } catch (error) {
+      console.error("Failed to add comment:", error);
+    }
+  };
+
   return (
     <LinearGradient
       colors={["#FFFFFF", "#F8FAFC"]}
       className="px-4 py-3 border-t border-slate-100 flex-row items-center gap-3"
     >
       <View className="h-8 w-8 rounded-full bg-gradient-to-br from-blue-400 to-purple-500" />
-      <Pressable className="flex-1 bg-slate-100 rounded-full px-4 py-2.5 flex-row items-center justify-between">
-        <Text className="text-[13px] text-slate-500 font-poppins-medium">
-          Write a comment...
-        </Text>
+      <View className="flex-1 bg-slate-100 rounded-full px-4 py-1.5 flex-row items-center justify-between">
+        <TextInput
+          value={commentText}
+          onChangeText={setCommentText}
+          placeholder="Write a comment..."
+          placeholderTextColor="#94A3B8"
+          style={{
+            fontFamily: "Poppins-Medium",
+            fontSize: 13,
+            color: "#475569",
+            flex: 1,
+            paddingVertical: 8,
+          }}
+          multiline
+        />
         <MaterialCommunityIcons
           name="emoticon-outline"
           size={16}
           color="#94A3B8"
         />
-      </Pressable>
-      <Pressable className="h-9 w-9 items-center justify-center rounded-full bg-blue-500">
-        <MaterialCommunityIcons name="send" size={16} color="white" />
+      </View>
+      <Pressable
+        onPress={handleAddComment}
+        disabled={isAddingComment || !commentText.trim()}
+        className={`h-9 w-9 items-center justify-center rounded-full ${!commentText.trim() || isAddingComment ? "bg-slate-300" : "bg-blue-500 active:bg-blue-600"}`}
+      >
+        {isAddingComment ? (
+          <ActivityIndicator size="small" color="white" />
+        ) : (
+          <MaterialCommunityIcons name="send" size={16} color="white" />
+        )}
       </Pressable>
     </LinearGradient>
   );
@@ -575,12 +659,16 @@ export default function NetworkingDetailScreen() {
   const scrollViewRef = useRef<ScrollView>(null);
 
   // Parse post from route params
-  let post: NetworkingPost | null = null;
+  let initialPost: NetworkingPost | null = null;
   try {
-    post = postParam ? JSON.parse(postParam) : null;
+    initialPost = postParam ? JSON.parse(postParam) : null;
   } catch (error) {
     console.error("Failed to parse post:", error);
   }
+
+  const { posts } = useNetworkingActivity();
+  const livePost = posts?.find((p) => p._id === id);
+  const post = livePost || initialPost;
 
   const handleBackPress = () => {
     router.back();
@@ -684,7 +772,7 @@ export default function NetworkingDetailScreen() {
       </ScrollView>
 
       {/* Comment Input */}
-      <CommentInputSection />
+      <CommentInputSection postId={post._id} />
     </SafeAreaView>
   );
 }
