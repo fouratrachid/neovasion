@@ -16,8 +16,13 @@ import relativeTime from "dayjs/plugin/relativeTime";
 import { SafeImage } from "@/components/SafeImage";
 import { useLocationName } from "@/hooks/useLocationName";
 import { NetworkingPost, NetworkingMedia } from "./types";
+import { useAuthStore } from "@/store/authStore";
+import { useAlert } from "@/hooks/useAlert";
+import { useRouter } from "expo-router";
 
 dayjs.extend(relativeTime);
+
+import { useNetworkingActions } from "@/hooks/useNetworkingActions";
 
 type NetworkingPostCardProps = {
   post: NetworkingPost;
@@ -385,6 +390,37 @@ const NetworkingPostCard = ({ post }: NetworkingPostCardProps) => {
   const comments = post.comments ?? [];
   const commentsPreview = comments.slice(0, 2); // Show max 2 to keep layout tight
 
+  const { addLike, removeLike } = useNetworkingActions();
+  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
+  const { showAlert } = useAlert();
+  const router = useRouter();
+
+  const handleLikeToggle = () => {
+    if (!isAuthenticated) {
+      showAlert({
+        title: "Login Required",
+        message: "Please log in to like this post.",
+        icon: "log-in-outline",
+        iconColor: "#3B82F6",
+        buttons: [
+          { text: "Cancel", style: "cancel" },
+          {
+            text: "Log In",
+            style: "default",
+            onPress: () => router.push("/(auth)/sign-in"),
+          },
+        ],
+      });
+      return;
+    }
+
+    if (post.is_like) {
+      removeLike(post._id);
+    } else {
+      addLike(post._id);
+    }
+  };
+
   return (
     <View
       className="mb-6 bg-white overflow-hidden"
@@ -497,8 +533,11 @@ const NetworkingPostCard = ({ post }: NetworkingPostCardProps) => {
       {/* Action Bar */}
       <View className="flex-row items-center justify-between px-2 pt-3 pb-2">
         <View className="flex-row items-center">
-          <Pressable className="flex-row items-center px-2 py-1.5 active:opacity-60">
-            {reaction === "wow" || (post.nbLikes ?? 0) > 0 ? (
+          <Pressable
+            onPress={handleLikeToggle}
+            className="flex-row items-center px-2 py-1.5 active:opacity-60"
+          >
+            {post.is_like ? (
               <MaterialCommunityIcons name="heart" size={26} color="#EF4444" />
             ) : (
               <MaterialCommunityIcons
@@ -508,7 +547,7 @@ const NetworkingPostCard = ({ post }: NetworkingPostCardProps) => {
               />
             )}
             <Text
-              className={`ml-1.5 text-[14px] font-poppins-bold ${(post.nbLikes ?? 0) > 0 ? "text-red-500" : "text-slate-600"}`}
+              className={`ml-1.5 text-[14px] font-poppins-bold ${post.is_like ? "text-red-500" : "text-slate-600"}`}
             >
               {post.nbLikes ?? 0}
             </Text>
