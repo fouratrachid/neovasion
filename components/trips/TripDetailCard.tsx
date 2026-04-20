@@ -101,7 +101,7 @@ export default function TripDetailCard({
           />
 
           {/* Image overlay gradient */}
-          <LinearGradient
+          {/* <LinearGradient
             colors={["transparent", "rgba(0,0,0,0.4)"]}
             style={{
               position: "absolute",
@@ -110,7 +110,7 @@ export default function TripDetailCard({
               right: 0,
               height: 80,
             }}
-          />
+          /> */}
 
           {/* Type badge */}
           <View
@@ -295,7 +295,7 @@ export default function TripDetailCard({
                 <Text
                   className="ml-1.5 text-emerald-800 text-[11px] font-poppins-semibold"
                   numberOfLines={1}
-                  style={{ maxWidth: 140 }}
+                  // style={{ maxWidth: 140 }}
                 >
                   {inc.value}
                 </Text>
