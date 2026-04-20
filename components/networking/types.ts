@@ -45,6 +45,7 @@ export interface NetworkingPost {
     description?: string;
     Htags?: string[];
     nbLikes?: number;
+    is_like?: boolean;
     comments?: NetworkingComment[];
     hoster: NetworkingHoster;
 }
