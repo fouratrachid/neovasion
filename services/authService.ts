@@ -1,3 +1,4 @@
+import { axiosClient } from '@/api/axiosClient';
 import { apiService } from './api';
 
 export interface LoginResponse {
@@ -30,17 +31,18 @@ class AuthService {
       method: 'POST',
       body: JSON.stringify({ email, password }),
     });
-    
+    console.log('🔍 Login response:', response);
+
     if (response.accessToken) {
       await apiService.setToken(response.accessToken);
     }
-    
+
     return response;
   }
-  
+
   async getMe(): Promise<UserProfileResponse> {
-    return apiService.request<UserProfileResponse>('users/me', { 
-      method: 'GET' 
+    return apiService.request<UserProfileResponse>('users/me', {
+      method: 'GET'
     });
   }
 
