@@ -71,17 +71,15 @@ axiosClient.interceptors.response.use(
             isRefreshing = true;
 
             try {
-                // Get the current access token to send as refresh token
-                const currentToken = await SecureStore.getItemAsync('auth_token');
                 console.log(`🔄 Attempting token refresh for ${requestUrl}...`);
                 const response = await axios.post(`${BASE_URL}/auth/refresh-token`,
-                    { refreshToken: currentToken },
+                    {}, // 1. Empty body so the backend uses the cookie
                     {
-                        withCredentials: true,
+                        withCredentials: true, // 2. Tells React Native to attach the HttpOnly cookie
                         headers: { 'Content-Type': 'application/json' }
                     }
                 );
-                console.log('✅ Token refresh response:', response);
+                console.log('✅ Token refresh response:', response.data);
                 // Parse the payload based on exact potential API standards
                 const newAccessToken = response.data?.accessToken || response.data?.data?.accessToken || response.data?.data?.token;
 
