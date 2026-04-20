@@ -1,4 +1,4 @@
-import { NetworkingActivityResponse, ProfilesActivityResponse } from "@/components/networking/types";
+import { NetworkingActivityResponse, NetworkingComment, ProfilesActivityResponse } from "@/components/networking/types";
 import { apiService } from "./api";
 
 const DEFAULT_COUNTRY = "TN";
@@ -98,6 +98,56 @@ class NetworkingService {
     async getProfileTrips(uniqueName: string): Promise<any> {
         const response = await apiService.request<any>(`trips/hoster/unique-name/${uniqueName}`, { method: "GET" });
         return response;
+    }
+
+    async addComment(postId: string, message: string, replyTo?: string | null): Promise<NetworkingComment> {
+        try {
+            const body: any = { PostId: postId, message };
+            if (replyTo) body.replyTo = replyTo;
+
+            const response = await apiService.request<NetworkingComment>(
+                "posts/addComment",
+                {
+                    method: "POST",
+                    body: JSON.stringify(body),
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                },
+            );
+            return response;
+        } catch (error) {
+            console.error("Failed to add comment:", error);
+            throw error;
+        }
+    }
+
+    async addLike(postId: string): Promise<void> {
+        try {
+            await apiService.request<void>(
+                `posts/${postId}/like`,
+                {
+                    method: "POST",
+                },
+            );
+        } catch (error) {
+            console.error(`Failed to add like to post ${postId}:`, error);
+            throw error;
+        }
+    }
+
+    async removeLike(postId: string): Promise<void> {
+        try {
+            await apiService.request<void>(
+                `posts/${postId}/like`,
+                {
+                    method: "DELETE",
+                },
+            );
+        } catch (error) {
+            console.error(`Failed to remove like from post ${postId}:`, error);
+            throw error;
+        }
     }
 
     async reverseGeocodeCoordinates(lat: number, lon: number): Promise<string> {
