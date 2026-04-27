@@ -24,7 +24,23 @@ export interface UserProfileResponse {
   };
 }
 
+export interface SignUpStep1Response {
+  success: boolean;
+  message: string;
+  data: {
+    email: string;
+  };
+}
+
 class AuthService {
+  async signUpStep1(email: string, firstName: string, lastName: string): Promise<SignUpStep1Response> {
+    const response = await apiService.request<SignUpStep1Response>('auth/signup1', {
+      method: 'POST',
+      body: JSON.stringify({ email, firstName, lastName }),
+    });
+    return response;
+  }
+
   async login(email: string, password: string): Promise<LoginResponse> {
     const response = await apiService.request<LoginResponse>('auth/login', {
       method: 'POST',
