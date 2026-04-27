@@ -18,13 +18,22 @@ export default function TripCard({ trip }: TripCardProps) {
   return (
     <Pressable onPress={() => router.push(`/trip/${trip._id}`)}>
       <View className="mx-4 mb-4 overflow-hidden rounded-3xl border border-slate-200 bg-white">
-        {!!cover && (
-          <Image
-            source={{ uri: cover }}
-            className="h-48 w-full"
-            resizeMode="cover"
-          />
-        )}
+        <View className="relative">
+          {!!cover && (
+            <Image
+              source={{ uri: cover }}
+              className="h-48 w-full"
+              resizeMode="cover"
+            />
+          )}
+          {trip.price != null && (
+            <View className="absolute right-3 top-3 rounded-full bg-white/90 px-3 py-1 shadow-sm backdrop-blur-md flex-row items-center">
+              <Text className="text-slate-900 text-[14px] font-poppins-bold">
+                ${trip.price.toLocaleString()}
+              </Text>
+            </View>
+          )}
+        </View>
         <View className="p-4">
           <Text className="text-blue-700 text-[11px] font-poppins-bold tracking-[1.2px]">
             {(trip.type_trip || "Trip").toUpperCase()}
