@@ -1,4 +1,3 @@
-import { axiosClient } from '@/api/axiosClient';
 import { apiService } from './api';
 
 export interface LoginResponse {
