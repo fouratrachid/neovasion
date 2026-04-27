@@ -73,6 +73,7 @@ export type Trip = {
     includes?: { type?: string; value?: string }[];
     hoster?: TripHoster;
     hebergements?: Accommodation[];
+    price?: number;
 };
 
 export type CountryNearby = {
