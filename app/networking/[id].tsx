@@ -32,6 +32,9 @@ import {
   NetworkingComment,
 } from "@/components/networking/types";
 
+// --- Actions Row ---
+import { useNetworkingActions } from "@/hooks/useNetworkingActions";
+
 dayjs.extend(relativeTime);
 
 const { width: SCREEN_WIDTH } = Dimensions.get("window");
@@ -344,9 +347,6 @@ const EngagementStatsSection = memo(({ post }: { post: NetworkingPost }) => {
   );
 });
 EngagementStatsSection.displayName = "EngagementStatsSection";
-
-// --- Actions Row ---
-import { useNetworkingActions } from "@/hooks/useNetworkingActions";
 
 const ActionsRow = memo(({ post }: { post: NetworkingPost }) => {
   const { addLike, removeLike } = useNetworkingActions();
