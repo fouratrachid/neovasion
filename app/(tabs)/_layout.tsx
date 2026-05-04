@@ -161,6 +161,7 @@ export default function TabsLayout() {
         name="templates"
         options={{
           title: "Templates",
+          href: null,
           tabBarIcon: ({ color, focused, size }) => (
             <CustomTabBarIcon
               focused={focused}
